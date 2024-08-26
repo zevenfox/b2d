@@ -1,9 +1,9 @@
 import React from "react";
 import StickyNavbar from './components/Navbar';
-import HighlightImage from '../images/lexi-highlightpic.png';
-import ProductImage from '../images/product-img.png';
-import BusinessModelImage from '../images/businessmodel-img.png';
-import Logo from '../images/lexi-logo.png';
+import Logo from '../images/Lexi-logo.png';
+import HighlightImage from '../images/Lexi-highlightpic.png';
+import ProductImage from '../images/Lexi-product-img.png';
+import BusinessModelImage from '../images/Lexi-businessmodel-img.png';
 
 function StartupPage() {
     return (
