@@ -31,18 +31,18 @@ function StartupPage() {
                     </div>
                     <div className="flex-none ml-16">
                         <div className="bg-black text-white p-6 rounded-md w-72">
-                            <div className="text-3xl font-bold">3</div>
+                            <div className="text-3xl font-bold text-[#C3FF73]">3</div>
                             <div className="text-gray-400">Investors</div>
                             <div className="mt-4">
-                                <div className="text-4xl font-bold">$25,500</div>
+                                <div className="text-4xl font-bold text-[#C3FF73]">$25,500</div>
                                 <div className="text-gray-400">51% raised of $50K goal</div>
-                                <div className="h-2 bg-gray-700 mt-2">
-                                    <div className="h-full bg-green-500" style={{width: '51%'}}></div>
+                                <div className="h-2 bg-gray-700 mt-2 rounded-[10px]">
+                                    <div className="h-full bg-[#C3FF73] rounded-[10px]" style={{width: '51%'}}></div>
                                 </div>
                             </div>
-                            <div className="text-3xl mt-6 text-white font-bold">85 days</div>
+                            <div className="text-3xl mt-6 text-white font-bold text-[#C3FF73]">85 days</div>
                             <div className="text-gray-400">Left to invest</div>
-                            <button className="mt-6 bg-lime-400 text-black w-full py-2 font-bold rounded">Invest in
+                            <button className="mt-6 bg-[#C3FF73] text-black w-full py-2 font-bold rounded">Invest in
                                 LEXI
                             </button>
                             <div className="mt-4 text-gray-400 text-center">$100 minimum investment</div>
@@ -75,22 +75,22 @@ function StartupPage() {
                     <div className="flex-none ml-16">
                         <div className="bg-black text-lime-400 p-6 rounded-md w-72 mt-8">
                             <div className="mb-6">
-                                <div className="text-xl font-bold">Valuation cap</div>
+                                <div className="text-xl font-bold text-[#C3FF73]">Valuation cap</div>
                                 <div className="text-white">$12,500,000</div>
                             </div>
                             <div className="h-px bg-gray-500"></div>
                             <div className="my-6">
-                                <div className="text-xl font-bold">Funding goal</div>
+                                <div className="text-xl font-bold text-[#C3FF73]">Funding goal</div>
                                 <div className="text-white">$50K / $618K</div>
                             </div>
                             <div className="h-px bg-gray-500"></div>
                             <div className="my-6">
-                                <div className="text-xl font-bold">Min&Max investment</div>
+                                <div className="text-xl font-bold text-[#C3FF73]">Min&Max investment</div>
                                 <div className="text-white">$500 to $100k</div>
                             </div>
                             <div className="h-px bg-gray-500"></div>
                             <div className="mt-6">
-                                <div className="text-xl font-bold">Deadline</div>
+                                <div className="text-xl font-bold text-[#C3FF73]">Deadline</div>
                                 <div className="text-white">November 12, 2024</div>
                             </div>
                         </div>

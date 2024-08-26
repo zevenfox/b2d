@@ -9,9 +9,21 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(to bottom, #0C1A2A 34%, #2C6292 100%);
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* body {
+  margin: 0;
+  font-family: 'Prompt', sans-serif;    
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(to bottom, #0C1A2A 34%, #2C6292 100%);
+  font-weight: lighter;
+  word-break: break-all;
+  background-size: cover;
+} */

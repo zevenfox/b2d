@@ -15,7 +15,7 @@ export default function Search({ placeholder, onSearch }: SearchProps) {
   ];
 
   return (
-    <div className="bg-white bg-opacity-10 backdrop-blur-sm p-6 rounded-[20px] flex flex-col gap-6 items-center w-[550px] sm:w-full">
+    <div>
       <Select
         options={serviceOptions}
         className="w-full"
@@ -25,9 +25,6 @@ export default function Search({ placeholder, onSearch }: SearchProps) {
             ...baseStyles,
             backgroundColor: 'transparent',
             borderColor: state.isFocused ? 'white' : 'gray',
-            '&:hover': {
-              borderColor: 'white',
-            },
           }),
           singleValue: (baseStyles) => ({
             ...baseStyles,
