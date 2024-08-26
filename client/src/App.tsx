@@ -7,6 +7,7 @@ import {
 import logo from './logo.svg';
 import './App.css';
 import Homepage from './pages/Hompage';
+import StartupPage from './pages/StartupPage';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Homepage />} />
+        <Route path="/startup" element={<StartupPage />} />
       </Routes>
     </Router>
   );
