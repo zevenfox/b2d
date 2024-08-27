@@ -8,7 +8,7 @@ import BusinessModelImage from '../images/Lexi-businessmodel-img.png';
 
 function StartupPage() {
     return (
-        <div className="text-left">
+        <div className="text-left bg-white">
             <StickyNavbar/>
             <header className="mx-auto px-56 py-16 text-left">
                 <div className="flex items-start">

@@ -8,18 +8,38 @@ import eagle_logo from '../../images/eagle-logo.png';
 import eagle_bg from '../../images/eagle-bg.png';
 import glur_logo from '../../images/glur-logo.png';
 import glur_bg from '../../images/glur-bg.png';
+import agod_logo from '../../images/agod-logo.png';
+import agod_bg from '../../images/agod-bg.png';
+import graph_logo from '../../images/graph-logo.png';
+import graph_bg from '../../images/graph-bg.png';
+import rectangle_logo from '../../images/rectangle-logo.png';
+import rectangle_bg from '../../images/rectangle-bg.png';
+import techno_logo from '../../images/techno-logo.png';
+import techno_bg from '../../images/techno-bg.png';
 
 const deals = [
-  { id: 1, name: 'Archax co., Ltd.', logo: arachax_logo, background: arachax_bg, description: 'Book Hotels at Lowest Prices. In Arachx we build a robot...', date: '15 Nov 23', raised: 25500, goal: 50000, percentRaised: 51, category: 'Architect and Engineer' },
+  { id: 1, name: 'Archax co., Ltd.', logo: arachax_logo, background: arachax_bg, description: 'Book Hotels at Lowest Prices. In Arachax we build a robot...', date: '15 Nov 23', raised: 25500, goal: 50000, percentRaised: 51, category: 'Architect and Engineer' },
   { id: 2, name: 'AI co., Ltd.', logo: ai_logo, background: ai_bg, description: 'AI Solutions at the best prices...', date: '12 Dec 23', raised: 32000, goal: 60000, percentRaised: 53, category: 'Technology' },
   { id: 3, name: 'Eagle co., Ltd.', logo: eagle_logo, background: eagle_bg, description: 'Secure transactions at high speed...', date: '10 Jan 24', raised: 18000, goal: 40000, percentRaised: 45, category: 'Technology' },
   { id: 4, name: 'Glur co., Ltd.', logo: glur_logo, background: glur_bg, description: 'Global communications and services...', date: '21 Jan 24', raised: 42000, goal: 70000, percentRaised: 60, category: 'Lifestyle' },
+  { id: 5, name: 'Agod co., Ltd.', logo: agod_logo, background: agod_bg, description: 'Discover great deals for your stay...', date: '25 Feb 24', raised: 15000, goal: 30000, percentRaised: 50, category: 'Cosmetic' },
+  { id: 6, name: 'Graph co., Ltd.', logo: graph_logo, background: graph_bg, description: 'Data analytics made simple In Graph we trust......', date: '18 Mar 24', raised: 29000, goal: 50000, percentRaised: 58, category: 'Technology' },
+  { id: 7, name: 'Rectangle co., Ltd.', logo: rectangle_logo, background: rectangle_bg, description: 'Innovative architectural designs...', date: '28 Apr 24', raised: 10000, goal: 40000, percentRaised: 25, category: 'Architect and Engineer' },
+  { id: 8, name: 'Techno co., Ltd.', logo: techno_logo, background: techno_bg, description: 'Advanced technology solutions...', date: '30 May 24', raised: 27000, goal: 60000, percentRaised: 45, category: 'Technology' }
 ];
 
-function StartUpCard() {
+interface StartUpCardProps {
+  limit?: number;
+  category?: string;
+}
+
+function StartUpCard({ limit, category }: StartUpCardProps) {
+  // Conditionally slice the array based on the limit prop
+  const displayedDeals = limit ? deals.slice(0, limit) : deals;
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-      {deals.map(deal => (
+      {displayedDeals.map(deal => (
         <div
           key={deal.id}
           className="bg-white rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl"
