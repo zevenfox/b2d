@@ -31,12 +31,13 @@ function Homepage() {
         </p>
         <FilterType onFilter={handleFilter} />
         <div className="mt-16">
-          <FeaturedDeals />
+          {/* Pass the limit prop to FeaturedDeals */}
+          <FeaturedDeals limit={4} />
         </div>
         <WhyB2D />
       </div>
       <div className="text-left">
-        <StickyFooter/>
+        <StickyFooter />
       </div>
     </div>
   );
