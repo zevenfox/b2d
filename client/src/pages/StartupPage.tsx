@@ -1,5 +1,6 @@
 import React from "react";
 import StickyNavbar from './components/Navbar';
+import StickyFooter from './components/Footer';
 import Logo from '../images/Lexi-logo.png';
 import HighlightImage from '../images/Lexi-highlightpic.png';
 import ProductImage from '../images/Lexi-product-img.png';
@@ -15,12 +16,12 @@ function StartupPage() {
                         <img src={Logo} alt="Logo" className="size-16"/>
                     </div>
                     <div className="flex-grow ml-8">
-                        <h1 className="text-6xl font-bold">
+                        <h1 className="text-6xl font-bold text-white">
                             LEXI
                         </h1>
                     </div>
                 </div>
-                <p className="text-xl text-gray-700 mt-4">
+                <p className="text-xl text-gray-400 mt-4">
                     Wireless Building Automation: Cost-effective Energy Management & Decarbonization
                 </p>
             </header>
@@ -40,7 +41,7 @@ function StartupPage() {
                                     <div className="h-full bg-[#C3FF73] rounded-[10px]" style={{width: '51%'}}></div>
                                 </div>
                             </div>
-                            <div className="text-3xl mt-6 text-white font-bold text-[#C3FF73]">85 days</div>
+                            <div className="text-3xl mt-6 font-bold text-[#C3FF73]">85 days</div>
                             <div className="text-gray-400">Left to invest</div>
                             <button className="mt-6 bg-[#C3FF73] text-black w-full py-2 font-bold rounded">Invest in
                                 LEXI
@@ -50,12 +51,12 @@ function StartupPage() {
                     </div>
                 </div>
                 <div className="flex items-start">
-                    <div className="flex-grow">
-                        <h1 className="text-3xl font-bold pt-24">
+                    <div className="flex-grow ">
+                        <h1 className="text-3xl font-bold pt-24 text-white">
                             Highlights
                         </h1>
                         <div>
-                            <p className="mt-4 text-gray-600 text-xl">
+                            <p className="mt-4 text-gray-400 text-xl">
                                 A sustainable and safe battery company, supported by the US Department of State,
                                 Google, and others, designs batteries with over 5,000 charge cycles and zero
                                 environmental
@@ -98,11 +99,11 @@ function StartupPage() {
                 </div>
             </div>
             <div className="mx-auto px-56 text-left">
-                <h1 className="text-3xl font-bold pt-16">
+                <h1 className="text-3xl font-bold pt-16 text-white">
                     Opportunity
                 </h1>
                 <div className="size-4/5">
-                    <p className="mt-4 text-gray-600 text-xl">
+                    <p className="mt-4 text-gray-400 text-xl">
                         A sustainable and safe battery company, supported by the US Department of State,
                         Google, and others, designs batteries with over 5,000 charge cycles and zero environmental
                         impact.
@@ -117,11 +118,11 @@ function StartupPage() {
                 </div>
             </div>
             <div className="mx-auto px-56 text-left">
-                <h1 className="text-3xl font-bold pt-16">
+                <h1 className="text-3xl font-bold pt-16 text-white">
                     Product
                 </h1>
                 <img src={ProductImage} alt="Product" className="size-4/5 pt-16"/>
-                <p className="mt-4 text-gray-600 text-xl pt-16">
+                <p className="mt-4 text-gray-400 text-xl pt-16">
                     A sustainable and safe battery company, supported by the US Department of State,
                     Google, and others, designs batteries with over 5,000 charge cycles and zero environmental impact.
                     With a strong clean energy background, the founding team joined the Plug and Play accelerateAZ
@@ -134,11 +135,11 @@ function StartupPage() {
                 </div>
             </div>
             <div className="mx-auto px-56 text-left">
-                <h1 className="text-3xl font-bold pt-16">
+                <h1 className="text-3xl font-bold pt-16 text-white">
                     Business Model
                 </h1>
                 <img src={BusinessModelImage} alt="BusinessModel" className="size-4/5 pt-16"/>
-                <p className="mt-4 text-gray-600 text-xl pt-16">
+                <p className="mt-4 text-gray-400 text-xl pt-16">
                     A sustainable and safe battery company, supported by the US Department of State,
                     Google, and others, designs batteries with over 5,000 charge cycles and zero environmental impact.
                     With a strong clean energy background, the founding team joined the Plug and Play accelerateAZ
@@ -151,10 +152,10 @@ function StartupPage() {
                 </div>
             </div>
             <div className="mx-auto px-56 text-left">
-                <h1 className="text-3xl font-bold pt-16">
+                <h1 className="text-3xl font-bold pt-16 text-white">
                     Company Info
                 </h1>
-                <p className="mt-4 text-gray-600 text-xl py-16">
+                <p className="mt-4 text-gray-400 text-xl pb-16">
                     A sustainable and safe battery company, supported by the US Department of State,
                     Google, and others, designs batteries with over 5,000 charge cycles and zero environmental impact.
                     With a strong clean energy background, the founding team joined the Plug and Play accelerateAZ
@@ -163,6 +164,7 @@ function StartupPage() {
                     In August 2024, F6S.com’s AI ranked the company among the top 3 US battery companies.
                 </p>
             </div>
+            <StickyFooter/>
         </div>
     );
 }
