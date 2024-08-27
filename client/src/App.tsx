@@ -8,7 +8,8 @@ import logo from './logo.svg';
 import './App.css';
 import Homepage from './pages/Hompage';
 import StartupPage from './pages/StartupPage';
-
+import FormPage from './pages/Formpage';
+import AdminPanel from './pages/Adminpanelpage';
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/startup" element={<StartupPage />} />
+        <Route path="/form" element={<FormPage />} />
+        <Route path="/adminpanel" element={<AdminPanel />} />
       </Routes>
     </Router>
   );
