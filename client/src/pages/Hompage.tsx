@@ -3,6 +3,8 @@ import StickyNavbar from './components/Navbar';
 import StickyFooter from './components/Footer';
 import Search from './components/Search';
 import FilterType from './components/FilterType';
+import FeaturedDeals from './components/FeaturedDeals';
+import WhyB2D from './components/WhyB2D';
 
 function Homepage() {
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
@@ -13,7 +15,7 @@ function Homepage() {
   };
 
   return (
-    <div className="text-center text-white">
+    <div className="text-white">
       <StickyNavbar />
       <div className="container mx-auto px-4 py-16 text-center">
         <h1 className="text-[72px] font-bold mb-4 bg-gradient-to-r from-[#8CB1FF] from-20% via-[#93FFFF] from-30% via-61% to-[#FFD6AD] to-74% inline-block text-transparent bg-clip-text">
@@ -27,9 +29,11 @@ function Homepage() {
           Countless startups are ready for the right partner to help them soar.
           Don't miss your chance to invest in the next big success!
         </p>
-
         <FilterType onFilter={handleFilter} />
-
+        <div className="mt-16">
+          <FeaturedDeals />
+        </div>
+        <WhyB2D />
       </div>
       <div className="text-left">
         <StickyFooter/>

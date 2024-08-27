@@ -6,6 +6,7 @@ import technology from '../../images/computer.png';
 import art from '../../images/graphic-design.png';
 
 
+
 const filters = [
     { id: 1, name: 'Lifestyle', icon: lifestyle },
     { id: 2, name: 'Cosmetic', icon: cosmetic },
