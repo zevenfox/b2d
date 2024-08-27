@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import StickyNavbar from './components/Navbar';
+import StickyFooter from './components/Footer';
 import Search from './components/Search';
 import FilterType from './components/FilterType';
 
@@ -29,6 +30,9 @@ function Homepage() {
 
         <FilterType onFilter={handleFilter} />
 
+      </div>
+      <div className="text-left">
+        <StickyFooter/>
       </div>
     </div>
   );
