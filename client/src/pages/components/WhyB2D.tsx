@@ -4,12 +4,12 @@ import whyb2d from "../../images/whyb2d.png";
 function WhyB2D() {
   return (
     <div className="container mx-auto my-[54px]">
-      <h2 className="text-[48px] font-bold mb-4">
+      <h2 className="text-[48px] font-bold mb-12">
         Why <span className="text-[#C3FF73]">B2D</span> Venture?
       </h2>
       <div className="flex flex-col lg:flex-row items-start">
         <div className="">
-          <p className="text-[18px] mb-12">
+          <p className="text-[18px] mb-12 text-left">
             Discover, engage, and invest with B2D Venture where innovation meets opportunity.
           </p>
           <ul className="space-y-4">
@@ -27,8 +27,8 @@ function WhyB2D() {
             </li>
           </ul>
         </div>
-        <div className="lg:w-1/2 mx-10">
-          <img src={whyb2d} alt="Why B2D" className="max-w-full rounded-lg" />
+        <div className="lg:w-1/2">
+          <img src={whyb2d} alt="Why B2D" className="max-w-full rounded-lg mx-10" />
         </div>
       </div>
     </div>

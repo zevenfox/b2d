@@ -24,7 +24,7 @@ function FilterType({ onFilter }: { onFilter: (filter: string) => void }) {
   };
 
   return (
-    <div className="bg-white  py-8 px-4 rounded-xl shadow-lg max-w-6xl mx-auto">
+    <div className="bg-white  py-2 px-4 rounded-xl shadow-lg max-w-6xl mx-auto">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
         {filters.map((filter) => (
           <div
