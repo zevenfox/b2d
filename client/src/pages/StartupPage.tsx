@@ -16,7 +16,7 @@ function StartupPage() {
                         <img src={Logo} alt="Logo" className="size-16"/>
                     </div>
                     <div className="flex-grow ml-8">
-                        <h1 className="text-6xl font-bold text-white">
+                        <h1 className="text-6xl font-bold">
                             LEXI
                         </h1>
                     </div>
@@ -52,7 +52,7 @@ function StartupPage() {
                 </div>
                 <div className="flex items-start">
                     <div className="flex-grow ">
-                        <h1 className="text-3xl font-bold pt-24 text-white">
+                        <h1 className="text-3xl font-bold pt-24">
                             Highlights
                         </h1>
                         <div>
@@ -99,7 +99,7 @@ function StartupPage() {
                 </div>
             </div>
             <div className="mx-auto px-56 text-left">
-                <h1 className="text-3xl font-bold pt-16 text-white">
+                <h1 className="text-3xl font-bold pt-16">
                     Opportunity
                 </h1>
                 <div className="size-4/5">
@@ -118,7 +118,7 @@ function StartupPage() {
                 </div>
             </div>
             <div className="mx-auto px-56 text-left">
-                <h1 className="text-3xl font-bold pt-16 text-white">
+                <h1 className="text-3xl font-bold pt-16">
                     Product
                 </h1>
                 <img src={ProductImage} alt="Product" className="size-4/5 pt-16"/>
@@ -135,7 +135,7 @@ function StartupPage() {
                 </div>
             </div>
             <div className="mx-auto px-56 text-left">
-                <h1 className="text-3xl font-bold pt-16 text-white">
+                <h1 className="text-3xl font-bold pt-16">
                     Business Model
                 </h1>
                 <img src={BusinessModelImage} alt="BusinessModel" className="size-4/5 pt-16"/>
@@ -152,7 +152,7 @@ function StartupPage() {
                 </div>
             </div>
             <div className="mx-auto px-56 text-left">
-                <h1 className="text-3xl font-bold pt-16 text-white">
+                <h1 className="text-3xl font-bold pt-16">
                     Company Info
                 </h1>
                 <p className="mt-4 text-gray-400 text-xl pb-16">
