@@ -5,4 +5,4 @@ B2D Venture is a web application designed to facilitate startup investment acros
 
 ## Documents
 - [Project Board](https://trello.com/b/rTMSobv1/software-process)
-- [Use Cases](https://github.com/zevenfox/b2d/wiki/Use-Case)
+- [Use Cases](https://github.com/zevenfox/b2d/wiki/Use-Cases)
