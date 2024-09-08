@@ -5,6 +5,7 @@ import Search from './components/Search';
 import FilterType from './components/FilterType';
 import FeaturedDeals from './components/FeaturedDeals';
 import WhyB2D from './components/WhyB2D';
+import HowToUse from './components/HowToUse';
 
 function Homepage() {
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
@@ -34,6 +35,7 @@ function Homepage() {
           {/* Pass the limit prop to FeaturedDeals */}
           <FeaturedDeals limit={4} />
         </div>
+        <HowToUse />
         <WhyB2D />
       </div>
       <div className="text-left">

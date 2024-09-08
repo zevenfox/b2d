@@ -1,7 +1,8 @@
+
 import React from 'react';
+import Logo from '../images/arachax-logo.png';
 import StickyNavbar from './components/Navbar';
 import StickyFooter from './components/Footer';
-import Logo from '../images/arachax-logo.png';
 
 const AdminPanel: React.FC = () => {
     const data = [
@@ -36,35 +37,58 @@ const AdminPanel: React.FC = () => {
 
     return (
         <div>
-            <StickyNavbar />
-            <div className="min-h-screen bg-gray-800 p-10">
-                {data.map((item, index) => (
-                    <div key={index} className="bg-white rounded-lg shadow-md p-6 mb-6">
-                        <div className="flex justify-between items-start">
-                            <div>
-                                <p><strong>First name :</strong> {item.firstName}</p>
-                                <p><strong>Last name :</strong> {item.lastName}</p>
-                                <p><strong>Email :</strong> {item.email}</p>
-                                <p><strong>Company_name :</strong> {item.companyName}</p>
-                                <p><strong>Company_email :</strong> {item.companyEmail}</p>
-                                <p><strong>Investment_amount :</strong> {item.investmentAmount}$</p>
-                                <p><strong>Reason :</strong> {item.reason}</p>
-                            </div>
-                            <div className="flex items-start">
-                                <img
-                                    src={Logo} alt="Logo" className="size-16" />
-                            </div>
-                        </div>
-                        <div className="flex justify-end mt-4">
-                            <button className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded mr-2">Approve</button>
-                            <button className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">Decline</button>
-                        </div>
-                    </div>
-                ))}
+            <StickyNavbar/>
+        <div className="min-h-screen bg-gray-100 p-10">
+            <div className="container mx-auto bg-white rounded-lg shadow-lg p-8">
+                <h1 className="text-2xl font-bold mb-6 text-gray-800">Admin Panel - Investment Requests</h1>
+                <table className="min-w-full bg-white border-collapse">
+                    <thead>
+                        <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th className="py-3 px-6 text-left">Investor Name</th>
+                            <th className="py-3 px-6 text-left">Company</th>
+                            <th className="py-3 px-6 text-left">Email</th>
+                            <th className="py-3 px-6 text-left">Investment Amount</th>
+                            <th className="py-3 px-6 text-left">Reason</th>
+                            {/* <th className="py-3 px-6 text-center">Logo</th> */}
+                            <th className="py-3 px-6 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody className="text-gray-700 text-sm font-light">
+                        {data.map((item, index) => (
+                            <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
+                                <td className="py-3 px-6 text-left whitespace-nowrap">
+                                    <span className="font-medium">{item.firstName} {item.lastName}</span>
+                                </td>
+                                <td className="py-3 px-6 text-left">
+                                    <span>{item.companyName}</span>
+                                </td>
+                                <td className="py-3 px-6 text-left">
+                                    <span>{item.email}</span>
+                                </td>
+                                <td className="py-3 px-6 text-left">
+                                    <span>${item.investmentAmount}</span>
+                                </td>
+                                <td className="py-3 px-6 text-left">
+                                    <span>{item.reason}</span>
+                                </td>
+                                {/* <td className="py-3 px-6 text-center">
+                                    <img src={Logo} alt="Logo" className="h-12 w-12 mx-auto" />
+                                </td> */}
+                                <td className="py-3 px-6 text-center">
+                                    <button className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded mb-1">Approve</button>
+                                    <button className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded mb-1">Decline</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
-            <StickyFooter />
+        </div>
+        <StickyFooter/>
         </div>
     );
 };
 
 export default AdminPanel;
+
+
