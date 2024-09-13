@@ -3,13 +3,17 @@ import StartUpCard from './components/StartUpCard';
 import sort_icon from '../images/sort-icon.png';
 import StickyNavbar from './components/Navbar';
 import StickyFooter from './components/Footer';
+import Colossal from './components/Colossal';
 
 function AllStartUpPage() {
   return (
     <div>
     <StickyNavbar/>
-    <div className="bg-white text-black py-16">
-      <div className="container mx-auto px-4 w-fit">
+      <div>
+        <Colossal/>
+      </div>
+      <div className="bg-white text-black py-16">
+        <div className="container mx-auto px-4 w-fit">
         <div className="text-center mb-8">
           <h1 className="text-[48px] font-bold ">All Startup Company</h1>
         </div>
