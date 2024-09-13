@@ -21,7 +21,7 @@ function StartupPage() {
                         </h1>
                     </div>
                 </div>
-                <p className="text-xl text-gray-400 mt-4">
+                <p className="text-xl text-black mt-4">
                     Wireless Building Automation: Cost-effective Energy Management & Decarbonization
                 </p>
             </header>
@@ -33,20 +33,20 @@ function StartupPage() {
                     <div className="flex-none ml-16">
                         <div className="bg-black text-white p-6 rounded-md w-72">
                             <div className="text-3xl font-bold text-[#C3FF73]">3</div>
-                            <div className="text-gray-400">Investors</div>
+                            <div>Investors</div>
                             <div className="mt-4">
                                 <div className="text-4xl font-bold text-[#C3FF73]">$25,500</div>
-                                <div className="text-gray-400">51% raised of $50K goal</div>
+                                <div>51% raised of $50K goal</div>
                                 <div className="h-2 bg-gray-700 mt-2 rounded-[10px]">
                                     <div className="h-full bg-[#C3FF73] rounded-[10px]" style={{width: '51%'}}></div>
                                 </div>
                             </div>
                             <div className="text-3xl mt-6 font-bold text-[#C3FF73]">85 days</div>
-                            <div className="text-gray-400">Left to invest</div>
+                            <div>Left to invest</div>
                             <button className="mt-6 bg-[#C3FF73] text-black w-full py-2 font-bold rounded">Invest in
                                 LEXI
                             </button>
-                            <div className="mt-4 text-gray-400 text-center">$100 minimum investment</div>
+                            <div className="mt-4 text-center">$100 minimum investment</div>
                         </div>
                     </div>
                 </div>
@@ -56,7 +56,7 @@ function StartupPage() {
                             Highlights
                         </h1>
                         <div>
-                            <p className="mt-4 text-gray-400 text-xl">
+                            <p className="mt-4 text-black text-xl">
                                 A sustainable and safe battery company, supported by the US Department of State,
                                 Google, and others, designs batteries with over 5,000 charge cycles and zero
                                 environmental
@@ -103,7 +103,7 @@ function StartupPage() {
                     Opportunity
                 </h1>
                 <div className="size-4/5">
-                    <p className="mt-4 text-gray-400 text-xl">
+                    <p className="mt-4 text-black text-xl">
                         A sustainable and safe battery company, supported by the US Department of State,
                         Google, and others, designs batteries with over 5,000 charge cycles and zero environmental
                         impact.
@@ -122,7 +122,7 @@ function StartupPage() {
                     Product
                 </h1>
                 <img src={ProductImage} alt="Product" className="size-4/5 pt-16"/>
-                <p className="mt-4 text-gray-400 text-xl pt-16">
+                <p className="mt-4 text-black text-xl pt-16">
                     A sustainable and safe battery company, supported by the US Department of State,
                     Google, and others, designs batteries with over 5,000 charge cycles and zero environmental impact.
                     With a strong clean energy background, the founding team joined the Plug and Play accelerateAZ
@@ -139,7 +139,7 @@ function StartupPage() {
                     Business Model
                 </h1>
                 <img src={BusinessModelImage} alt="BusinessModel" className="size-4/5 pt-16"/>
-                <p className="mt-4 text-gray-400 text-xl pt-16">
+                <p className="mt-4 text-black text-xl pt-16">
                     A sustainable and safe battery company, supported by the US Department of State,
                     Google, and others, designs batteries with over 5,000 charge cycles and zero environmental impact.
                     With a strong clean energy background, the founding team joined the Plug and Play accelerateAZ
@@ -155,7 +155,7 @@ function StartupPage() {
                 <h1 className="text-3xl font-bold pt-16">
                     Company Info
                 </h1>
-                <p className="mt-4 text-gray-400 text-xl pb-16">
+                <p className="mt-4 text-black text-xl pb-16">
                     A sustainable and safe battery company, supported by the US Department of State,
                     Google, and others, designs batteries with over 5,000 charge cycles and zero environmental impact.
                     With a strong clean energy background, the founding team joined the Plug and Play accelerateAZ
