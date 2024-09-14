@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  username    String    @unique
+  password    String
+  first_name  String    @db.VarChar(100)
+  last_name   String    @db.VarChar(100)
+  email       String    @db.VarChar(255)
+  role        Role
+  startups    StartUp[] // Relation to StartUp model
+  investments InvestmentDeal[] // Relation to InvestmentDeal model
+}
+
+model StartUp {
+  id                     Int       @id @default(autoincrement())
+  user_id                Int       @unique // One user can be one startup
+  user                   User      @relation(fields: [user_id], references: [id])
+  valuation_cap          Float
+  funding_goal           Float
+  min_investment         Float
+  max_investment         Float
+  deadline               DateTime
+  opportunity            String
+  opportunity_image      String?   @db.VarChar(255)
+  product                String
+  product_image          String?   @db.VarChar(255)
+  business_model         String
+  business_model_image   String?   @db.VarChar(255)
+  company_name           String    @db.VarChar(255)
+  company_description    String
+  company_logo           String    @db.VarChar(255)
+  company_background     String    @db.VarChar(255)
+  company_business_type  BusinessType
+  company_email          String    @db.VarChar(255)
+  company_website        String    @db.VarChar(255)
+  company_telephone      String    @db.VarChar(50)
+  company_address        String    @db.VarChar(255)
+  investments            InvestmentDeal[] // Relation to InvestmentDeal model
+}
+
+model InvestmentDeal {
+  id                 Int       @id @default(autoincrement())
+  investor_user_id   Int
+  investor           User      @relation(fields: [investor_user_id], references: [id])
+  startup_id         Int       // Foreign key to StartUp
+  startup            StartUp   @relation(fields: [startup_id], references: [id])
+  investment_amount  Float
+  reason             String
+  status             DealStatus
+  created_at         DateTime  @default(now())
+  updated_at         DateTime  @updatedAt
+}
+
+enum Role {
+  investor
+  start_up
+}
+
+enum BusinessType {
+  lifestyle
+  cosmetics
+  technology
+  architecture
+  arts
+}
+
+enum DealStatus {
+  pending
+  accepted
+  declined
+}
