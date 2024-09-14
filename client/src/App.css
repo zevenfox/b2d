@@ -36,3 +36,57 @@
     transform: rotate(360deg);
   }
 }
+
+@keyframes upDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-upDown {
+  animation: upDown 4s infinite;
+}
+
+@keyframes fadeUpLeftToRight {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    clip-path: inset(0 100% 0 0); /* Initially hide from the right */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0); /* Reveal from the left to right */
+  }
+}
+
+.fade-up-left-to-right {
+  animation: fadeUpLeftToRight 1.5s ease-out forwards; /* Smooth fade-up from left to right */
+}
+
+@keyframes rainbow {
+  0% { fill: red; }
+  14% { fill: orange; }
+  28% { fill: yellow; }
+  42% { fill: green; }
+  57% { fill: blue; }
+  71% { fill: indigo; }
+  85% { fill: violet; }
+  100% { fill: red; }
+}
+
+@keyframes wave {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(calc(-50px * var(--amplitude))); } /* Dynamic amplitude */
+  100% { transform: translateY(0); }
+}
+
+.bar {
+  animation: rainbow 5s infinite linear, wave 2s infinite ease-in-out;
+  --amplitude: 1; /* Placeholder, to be overridden by JS */
+  transition: fill 1s linear; /* Smooth color transition */
+}
+

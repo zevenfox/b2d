@@ -5,7 +5,7 @@ const Navbar: React.FC = () => {
     const navigate = useNavigate();
 
     const handleLogoClick = () => {
-        navigate("/");
+        navigate("/home");
     };
   return (
     <nav className="w-full h-16 bg-[#0C1A2A] flex justify-between items-center px-8 md:px-16">

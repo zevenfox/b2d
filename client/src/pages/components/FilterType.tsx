@@ -4,6 +4,7 @@ import cosmetic from '../../images/makeup.png';
 import lifestyle from '../../images/lifestyle.png';
 import technology from '../../images/computer.png';
 import art from '../../images/graphic-design.png';
+import {useNavigate} from "react-router-dom";
 
 
 
@@ -17,10 +18,16 @@ const filters = [
 
 function FilterType({ onFilter }: { onFilter: (filter: string) => void }) {
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleFilterClick = (filterName: string) => {
     setSelectedFilter(filterName);
     onFilter(filterName);
+
+    if (filterName === 'Technology') {
+        navigate('/technologystartup');
+        window.scrollTo(0, 0);
+    }
   };
 
   return (

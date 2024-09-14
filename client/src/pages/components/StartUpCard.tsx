@@ -16,6 +16,7 @@ import rectangle_logo from '../../images/rectangle-logo.png';
 import rectangle_bg from '../../images/rectangle-bg.png';
 import techno_logo from '../../images/techno-logo.png';
 import techno_bg from '../../images/techno-bg.png';
+import {useNavigate} from "react-router-dom";
 
 const deals = [
   { id: 1, name: 'Archax co., Ltd.', logo: arachax_logo, background: arachax_bg, description: 'Book Hotels at Lowest Prices. In Arachax we build a robot...', date: '15 Nov 23', raised: 25500, goal: 50000, percentRaised: 51, category: 'Architect and Engineer' },
@@ -36,9 +37,14 @@ interface StartUpCardProps {
 function StartUpCard({ limit, category }: StartUpCardProps) {
   // Conditionally slice the array based on the limit prop
   const displayedDeals = limit ? deals.slice(0, limit) : deals;
+  const navigate = useNavigate();
+  const handleCardClick = () => {
+    navigate("/startup");
+    window.scrollTo(0, 0);
+  };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+    <div onClick={handleCardClick} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
       {displayedDeals.map(deal => (
         <div
           key={deal.id}
