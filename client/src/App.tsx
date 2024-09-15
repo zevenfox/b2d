@@ -7,7 +7,7 @@ import {
 import './App.css';
 import Homepage from './pages/Hompage';
 import StartupPage from './pages/StartupPage';
-import FormPage from './pages/Formpage';
+import StartupFormPage from './pages/StartupFormPage'
 import AdminPanel from './pages/Adminpanelpage';
 import AllStartUpPage from './pages/AllStartUpPage';
 import TechnologyStartUpPage from './pages/TechnologyPage';
@@ -20,7 +20,7 @@ function App() {
       <Routes>
         <Route path="/home" element={<Homepage />} />
         <Route path="/startup" element={<StartupPage />} />
-        <Route path="/form" element={<FormPage />} />
+        <Route path="/startupform" element={<StartupFormPage />} />
         <Route path="/adminpanel" element={<AdminPanel />} />
         <Route path="/allstartup" element={<AllStartUpPage />} />
         <Route path="/technologystartup" element={<TechnologyStartUpPage />} />
