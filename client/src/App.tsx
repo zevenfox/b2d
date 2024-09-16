@@ -12,6 +12,7 @@ import AdminPanel from './pages/Adminpanelpage';
 import AllStartUpPage from './pages/AllStartUpPage';
 import TechnologyStartUpPage from './pages/TechnologyPage';
 import PrehomePage from "./pages/PrehomePage";
+import IndexPage from './pages/IndexPage';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path="/adminpanel" element={<AdminPanel />} />
         <Route path="/allstartup" element={<AllStartUpPage />} />
         <Route path="/technologystartup" element={<TechnologyStartUpPage />} />
+        <Route path="/index" element={<IndexPage />} />
         <Route path="/" element={<PrehomePage />} />
       </Routes>
     </Router>
