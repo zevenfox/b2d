@@ -13,6 +13,7 @@ import AllStartUpPage from './pages/AllStartUpPage';
 import TechnologyStartUpPage from './pages/TechnologyPage';
 import PrehomePage from "./pages/PrehomePage";
 import IndexPage from './pages/IndexPage';
+import InvestorSignUp from './pages/InvestorFormPage';
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/allstartup" element={<AllStartUpPage />} />
         <Route path="/technologystartup" element={<TechnologyStartUpPage />} />
         <Route path="/index" element={<IndexPage />} />
+        <Route path="/investorform" element={<InvestorSignUp />} />
         <Route path="/" element={<PrehomePage />} />
       </Routes>
     </Router>
