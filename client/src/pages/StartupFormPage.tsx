@@ -7,9 +7,6 @@ import { toast } from 'react-toastify';  // Ensure this is imported for notifica
 interface FormData {
     username: string;
     password: string;
-    firstName: string;
-    lastName: string;
-    email: string;
 }
 interface FormFieldw {
     label: string;
@@ -108,9 +105,8 @@ interface FormData {
 
 const StartupSignUp: React.FC = () => {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState<FormData>({
-        username: '', password: '', firstName: '', lastName: '', email: ''
-    });
+    const [formData, setFormData] = useState<FormData>({ username: '', password: '' });
+    const [isLogin, setIsLogin] = useState(false); // Toggle between Sign Up and Login
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
