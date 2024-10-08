@@ -2,8 +2,15 @@ import React, { useState, ChangeEvent, FormEvent } from 'react';
 import StickyNavbar from './components/Navbar';
 import StickyFooter from './components/Footer';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';  // Ensure this is imported for notifications
 
-
+interface FormData {
+    username: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+}
 interface FormFieldw {
     label: string;
     name: string;
@@ -102,36 +109,37 @@ interface FormData {
 const StartupSignUp: React.FC = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState<FormData>({
-        username: '', password: '', firstName: '', lastName: '', email: '',
-        companyName: '', companyLogo: null, highlight: '', companyOpportunity: '',
-        businessOpportunityImage: null, companyProduct: '', businessProductImage: null,
-        companyDescription: '', companyBusinessModel: '', businessModelImage: null,
-        deadline: '', companyBusinessType: '', companyBackground: '',
-        companyWebsite: '', companyAddress: '', companyEmail: '', companyPhone: '',
-        valuationCap: '', fundingGoal: '', minInvestment: '', maxInvestment: ''
+        username: '', password: '', firstName: '', lastName: '', email: ''
     });
 
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData(prevState => ({ ...prevState, [name]: value }));
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        // Store investor data in localStorage
+        localStorage.setItem('investorUsername', formData.username);
+        localStorage.setItem('investorPassword', formData.password);
+        toast.success('Sign up successful!');
+        navigate('/home');
     };
 
     const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, files } = e.target;
-        if (files && files.length > 0) {
-            setFormData(prevState => ({ ...prevState, [name]: files[0] }));
+        if (files && files[0]) {
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: files[0],
+            }));
         }
-    };
-
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        console.log(formData);
-        // Here you would typically send the data to your backend
     };
 
     return (
         <div className="container mx-auto p-6">
-            <StickyNavbar />
             <div className="w-full max-w-4xl mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <h2 className="text-2xl font-bold mb-6">Sign Up as Startup</h2>
                 <form onSubmit={handleSubmit} className="space-y-8">
@@ -182,7 +190,6 @@ const StartupSignUp: React.FC = () => {
                     </button>
                 </div>
             </div>
-        <StickyFooter/>
         </div>
         
     );
