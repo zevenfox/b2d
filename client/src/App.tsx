@@ -21,7 +21,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/home" element={<Homepage />} />
-        <Route path="/startup" element={<StartupPage />} />
+        <Route path="/startups/:id" element={<StartupPage />} />
         <Route path="/startupform" element={<StartupFormPage />} />
         <Route path="/adminpanel" element={<AdminPanel />} />
         <Route path="/allstartup" element={<AllStartUpPage />} />
