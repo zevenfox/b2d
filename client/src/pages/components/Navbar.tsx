@@ -16,11 +16,15 @@ const Navbar: React.FC = () => {
 
       {/* Menu Section */}
       <div className="flex space-x-6 text-white">
-        <button className="hover:text-[#A8FF35]">Register as Start up</button>
-        <button className="hover:text-[#A8FF35]">Login</button>
-        <button className="px-4 py-2 border border-white rounded-full hover:border-[#A8FF35] hover:text-[#A8FF35]">
-          Sign Up
-        </button>
+        <button 
+        onClick={() => navigate('/startupform')}
+        className="hover:text-[#A8FF35]">Register as Start up</button>
+        <button
+        onClick={() => navigate('/index')}
+        className="hover:text-[#A8FF35]">Login</button>
+        <button 
+        onClick={() => navigate('/investorform')}
+        className="px-4 py-2 border border-white rounded-full hover:border-[#A8FF35] hover:text-[#A8FF35]">Sign Up</button>
       </div>
     </nav>
   );
