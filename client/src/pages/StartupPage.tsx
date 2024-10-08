@@ -54,7 +54,7 @@ const StartupPage: React.FC = () => {
     useEffect(() => {
         const fetchStartup = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/StartUps/${id}`);
+                const response = await fetch(`http://localhost:3001/api/StartUps/${id}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch startup data');
                 }
