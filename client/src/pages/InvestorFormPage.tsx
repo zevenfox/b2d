@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';  // Ensure this is imported for notifications
 
 interface FormData {
     username: string;
@@ -7,8 +8,6 @@ interface FormData {
     firstName: string;
     lastName: string;
     email: string;
-    investmentPreference: string;
-    investmentAmount: string;
 }
 
 const FormField: React.FC<{
@@ -45,9 +44,7 @@ const InvestorSignUp: React.FC = () => {
         password: '',
         firstName: '',
         lastName: '',
-        email: '',
-        investmentPreference: '',
-        investmentAmount: '',
+        email: ''
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,8 +54,11 @@ const InvestorSignUp: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(formData);
-        // Here you would typically send the data to your backend
+        // Store investor data in localStorage
+        localStorage.setItem('investorUsername', formData.username);
+        localStorage.setItem('investorPassword', formData.password);
+        toast.success('Sign up successful!');
+        navigate('/home');
     };
 
     return (
