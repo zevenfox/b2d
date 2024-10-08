@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import StickyNavbar from './components/Navbar';
-import StickyFooter from './components/Footer';
 import Stock from "../images/stock.png";
 import Partner from "../images/partner.png";
 import BarAnimation from "./components/AnimatedBars";
@@ -18,7 +16,6 @@ function PrehomePage() {
 
     return (
         <div>
-            <StickyNavbar />
             <div className="bg-white">
                 <div className="relative bg-[#0C1A2A]">
                     <div className="text-center pt-16">
@@ -32,7 +29,7 @@ function PrehomePage() {
                 </div>
                 <div className="flex justify-center pt-16">
                     <a
-                        href="home"
+                        href="index"
                         className="inline-block px-8 py-4 text-white bg-[#0C1A2A] rounded-lg text-[24px] font-semibold transition duration-300 ease-in-out transform hover:bg-[#A8FF35] hover:text-black hover:scale-105 hover:shadow-xl"
                     >
                         Get Started
@@ -75,7 +72,6 @@ function PrehomePage() {
                     </div>
                 </div>
             </div>
-            <StickyFooter/>
         </div>
     );
 }
