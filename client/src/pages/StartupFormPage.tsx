@@ -1,82 +1,71 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import StickyNavbar from './components/Navbar';
-import StickyFooter from './components/Footer';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';  // Ensure this is imported for notifications
+import { toast } from 'react-toastify';
 
 interface FormData {
     username: string;
     password: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    companyName: string;
+    companyLogo: File | null;
+    highlight: string;
+    companyOpportunity: string;
+    businessOpportunityImage: File | null;
+    companyProduct: string;
+    businessProductImage: File | null;
+    companyDescription: string;
+    companyBusinessModel: string;
+    businessModelImage: File | null;
+    deadline: string;
+    companyBusinessType: string;
+    companyBackground: string;
+    companyWebsite: string;
+    companyAddress: string;
+    companyEmail: string;
+    companyPhone: string;
+    valuationCap: number;
+    fundingGoal: number;
+    minInvestment: number;
+    maxInvestment: number;
 }
-interface FormFieldw {
+
+const FormField: React.FC<{
     label: string;
     name: string;
     type?: string;
     required?: boolean;
+    value: string | number;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     placeholder?: string;
-    value: string;
-    onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
-}
-
-const FormField: React.FC<FormFieldw> = ({ label, name, type = "text", required = false, placeholder, value, onChange }) => (
+}> = ({ label, name, type = "text", required = false, value, onChange, placeholder }) => (
     <div className="mb-4">
-        <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+        <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
             {label}
             {required && <span className="text-red-500 ml-1">*</span>}
         </label>
-        {type === 'textarea' ? (
-            <textarea
-                id={name}
-                name={name}
-                required={required}
-                placeholder={placeholder}
-                value={value}
-                onChange={onChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                rows={3}
-            />
-        ) : type === 'select' ? (
-            <select
-                id={name}
-                name={name}
-                required={required}
-                value={value}
-                onChange={onChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            >
-                <option value="">Select business type</option>
-                <option value="lifestyle">Lifestyle</option>
-                <option value="cosmetic">Cosmetic</option>
-                <option value="technology">Technology</option>
-                <option value="architect and engineer">Architect And Engineer</option>
-                <option value="art and design">Art And Design</option>
-            </select>
-        ) : (
-            <input
-                type={type}
-                id={name}
-                name={name}
-                required={required}
-                placeholder={placeholder}
-                value={value}
-                onChange={onChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-        )}
+        <input
+            type={type}
+            id={name}
+            name={name}
+            required={required}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
     </div>
 );
 
-interface ImageUploadProps {
+const FileInput: React.FC<{
     label: string;
     name: string;
-    required: boolean;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-    value: File | null;
-}
-
-const ImageUpload: React.FC<ImageUploadProps> = ({ label, name, required, onChange, value }) => (
+    required?: boolean;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}> = ({ label, name, required = false, onChange }) => (
     <div className="mb-4">
-        <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+        <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
             {label}
             {required && <span className="text-red-500 ml-1">*</span>}
         </label>
@@ -86,109 +75,302 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ label, name, required, onChan
             name={name}
             required={required}
             onChange={onChange}
-            className="mt-1 block w-full text-sm text-gray-500
-        file:mr-4 file:py-2 file:px-4
-        file:rounded-full file:border-0
-        file:text-sm file:font-semibold
-        file:bg-indigo-50 file:text-indigo-700
-        hover:file:bg-indigo-100"
+            className="w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
-        {value && (
-            <img src={URL.createObjectURL(value)} alt={label} className="mt-2 h-20 w-20 object-cover rounded-md" />
-        )}
     </div>
 );
 
-interface FormData {
-    [key: string]: string | File | null;
-}
-
-const StartupSignUp: React.FC = () => {
+const InvestorSignUp: React.FC = () => {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState<FormData>({ username: '', password: '' });
-    const [isLogin, setIsLogin] = useState(false); // Toggle between Sign Up and Login
+    const [formData, setFormData] = useState<FormData>({
+        username: '',
+        password: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        companyName: '',
+        companyLogo: null,
+        highlight: '',
+        companyOpportunity: '',
+        businessOpportunityImage: null,
+        companyProduct: '',
+        businessProductImage: null,
+        companyDescription: '',
+        companyBusinessModel: '',
+        businessModelImage: null,
+        deadline: '',
+        companyBusinessType: '',
+        companyBackground: '',
+        companyWebsite: '',
+        companyAddress: '',
+        companyEmail: '',
+        companyPhone: '',
+        valuationCap: 0,
+        fundingGoal: 0,
+        minInvestment: 0,
+        maxInvestment: 0,
+    });
 
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value,
-        }));
+        setFormData(prevState => ({ ...prevState, [name]: value }));
     };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, files } = e.target;
+        if (files && files[0]) {
+            setFormData(prevState => ({ ...prevState, [name]: files[0] }));
+        }
+    };
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Store investor data in localStorage
+        // Store investor data in localStorage or handle submission as required
         localStorage.setItem('investorUsername', formData.username);
         localStorage.setItem('investorPassword', formData.password);
+        // Add more local storage for company data as needed
         toast.success('Sign up successful!');
         navigate('/home');
     };
 
-    const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, files } = e.target;
-        if (files && files[0]) {
-            setFormData(prevState => ({
-                ...prevState,
-                [name]: files[0],
-            }));
-        }
-    };
-
     return (
-        <div className="container mx-auto p-6">
-            <div className="w-full max-w-4xl mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <h2 className="text-2xl font-bold mb-6">Sign Up as Startup</h2>
-                <form onSubmit={handleSubmit} className="space-y-8">
-                    <div>
-                        <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
-                        <div className="grid grid-cols-2 gap-4">
-                            <FormField name="username" label="Username" required placeholder="Enter your username" value={formData.username as string} onChange={handleInputChange} />
-                            <FormField name="password" label="Password" type="password" required placeholder="Enter your password" value={formData.password as string} onChange={handleInputChange} />
-                            <FormField name="firstName" label="First Name" required placeholder="Enter your first name" value={formData.firstName as string} onChange={handleInputChange} />
-                            <FormField name="lastName" label="Last Name" required placeholder="Enter your last name" value={formData.lastName as string} onChange={handleInputChange} />
-                            <FormField name="email" label="Email" type="email" required placeholder="example@gmail.com" value={formData.email as string} onChange={handleInputChange} />
-                        </div>
-                    </div>
-
-                    <div>
+        <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+            <div className="sm:mx-auto sm:w-full sm:max-w-md">
+                <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    Sign Up as Start Up
+                </h2>
+            </div>
+            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+                <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                    <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <FormField
+                            label="Username"
+                            name="username"
+                            required
+                            value={formData.username}
+                            onChange={handleInputChange}
+                            placeholder="Enter your username"
+                        />
+                        <FormField
+                            label="Password"
+                            name="password"
+                            type="password"
+                            required
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            placeholder="Enter your password"
+                        />
+                        <FormField
+                            label="First Name"
+                            name="firstName"
+                            required
+                            value={formData.firstName}
+                            onChange={handleInputChange}
+                            placeholder="Enter your first name"
+                        />
+                        <FormField
+                            label="Last Name"
+                            name="lastName"
+                            required
+                            value={formData.lastName}
+                            onChange={handleInputChange}
+                            placeholder="Enter your last name"
+                        />
+                        <FormField
+                            label="Email"
+                            name="email"
+                            type="email"
+                            required
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            placeholder="Enter your email address"
+                        />
                         <h3 className="text-xl font-semibold mb-4">Company Information</h3>
-                        <div className="space-y-4">
-                            <FormField name="companyName" label="Company Name" required placeholder="Enter your company name" value={formData.companyName as string} onChange={handleInputChange} />
-                            <ImageUpload name="companyLogo" label="Company Logo" required onChange={handleImageUpload} value={formData.companyLogo as File | null} />
-                            <FormField name="highlight" label="Highlight" placeholder="Enter company highlight" value={formData.highlight as string} onChange={handleInputChange} />
-                            <FormField name="companyOpportunity" label="Company Opportunity" type="textarea" required placeholder="Describe the company opportunity" value={formData.companyOpportunity as string} onChange={handleInputChange} />
-                            <ImageUpload name="businessOpportunityImage" label="Business Opportunity Image" required onChange={handleImageUpload} value={formData.businessOpportunityImage as File | null} />
-                            <FormField name="companyProduct" label="Company Product" type="textarea" required placeholder="Describe your company's product" value={formData.companyProduct as string} onChange={handleInputChange} />
-                            <ImageUpload name="businessProductImage" label="Business Product Image" required onChange={handleImageUpload} value={formData.businessProductImage as File | null} />
-                            <FormField name="companyDescription" label="Company Description" type="textarea" required placeholder="Provide a brief company description" value={formData.companyDescription as string} onChange={handleInputChange} />
-                            <FormField name="companyBusinessModel" label="Company Business Model" type="textarea" required placeholder="Describe your business model" value={formData.companyBusinessModel as string} onChange={handleInputChange} />
-                            <ImageUpload name="businessModelImage" label="Business Model Image" required onChange={handleImageUpload} value={formData.businessModelImage as File | null} />
-                            <FormField name="deadline" label="Deadline" type="date" required placeholder="Select a deadline" value={formData.deadline as string} onChange={handleInputChange} />
-                            <FormField name="companyBusinessType" label="Company Business Type" type="select" required placeholder="Select business type" value={formData.companyBusinessType as string} onChange={handleInputChange} />
-                            <FormField name="companyBackground" label="Company Background" type="textarea" required placeholder="Provide company background information" value={formData.companyBackground as string} onChange={handleInputChange} />
-                            <FormField name="companyWebsite" label="Company Website (if have)" type="url" placeholder="https://example.com" value={formData.companyWebsite as string} onChange={handleInputChange} />
-                            <FormField name="companyAddress" label="Company Address" required placeholder="Enter company address" value={formData.companyAddress as string} onChange={handleInputChange} />
-                            <FormField name="companyEmail" label="Company Email" type="email" required placeholder="company@example.com" value={formData.companyEmail as string} onChange={handleInputChange} />
-                            <FormField name="companyPhone" label="Company Phone" type="tel" required placeholder="+1234567890" value={formData.companyPhone as string} onChange={handleInputChange} />
-                            <FormField name="valuationCap" label="Valuation Cap (USD)" type="number" required placeholder="Enter valuation cap" value={formData.valuationCap as string} onChange={handleInputChange} />
-                            <FormField name="fundingGoal" label="Funding Goal (USD)" type="number" required placeholder="Enter funding goal" value={formData.fundingGoal as string} onChange={handleInputChange} />
-                            <FormField name="minInvestment" label="Min Investment (USD)" type="number" required placeholder="Enter minimum investment" value={formData.minInvestment as string} onChange={handleInputChange} />
-                            <FormField name="maxInvestment" label="Max Investment (USD)" type="number" required placeholder="Enter maximum investment" value={formData.maxInvestment as string} onChange={handleInputChange} />
+                        <FormField
+                            label="Company Name"
+                            name="companyName"
+                            required
+                            value={formData.companyName}
+                            onChange={handleInputChange}
+                            placeholder="Enter your company name"
+                        />
+                        <FileInput
+                            label="Company Logo"
+                            name="companyLogo"
+                            required
+                            onChange={handleFileChange}
+                        />
+                        <FormField
+                            label="Highlight"
+                            name="highlight"
+                            required 
+                            value={formData.highlight}
+                            onChange={handleInputChange}
+                            placeholder="Enter highlight"
+                        />
+                        <FormField
+                            label="Company Opportunity"
+                            name="companyOpportunity"
+                            required 
+                            value={formData.companyOpportunity}
+                            onChange={handleInputChange}
+                            placeholder="Enter company opportunity"
+                        />
+                        <FileInput
+                            label="Business Opportunity Image"
+                            name="businessOpportunityImage"
+                            required
+                            onChange={handleFileChange}
+                        />
+                        <FormField
+                            label="Company Product"
+                            name="companyProduct"
+                            required 
+                            value={formData.companyProduct}
+                            onChange={handleInputChange}
+                            placeholder="Enter company product"
+                        />
+                        <FileInput
+                            label="Business Product Image"
+                            name="businessProductImage"
+                            onChange={handleFileChange}
+                        />
+                        <FormField
+                            label="Company Description"
+                            name="companyDescription"
+                            required 
+                            value={formData.companyDescription}
+                            onChange={handleInputChange}
+                            placeholder="Enter company description"
+                        />
+                        <FormField
+                            label="Company Business Model"
+                            name="companyBusinessModel"
+                            required 
+                            value={formData.companyBusinessModel}
+                            onChange={handleInputChange}
+                            placeholder="Enter company business model"
+                        />
+                        <FileInput
+                            label="Business Model Image"
+                            name="businessModelImage"
+                            onChange={handleFileChange}
+                        />
+                        <FormField
+                            label="Deadline"
+                            name="deadline"
+                            type="date"
+                            required
+                            value={formData.deadline}
+                            onChange={handleInputChange}
+                        />
+                        <FormField
+                            label="Company Business Type"
+                            name="companyBusinessType"
+                            required
+                            value={formData.companyBusinessType}
+                            onChange={handleInputChange}
+                            placeholder="Select business type"
+                        />
+                        <FormField
+                            label="Company Background"
+                            name="companyBackground"
+                            required 
+                            value={formData.companyBackground}
+                            onChange={handleInputChange}
+                            placeholder="Enter company background"
+                        />
+                        <FormField
+                            label="Company Website"
+                            name="companyWebsite"
+                            required 
+                            value={formData.companyWebsite}
+                            onChange={handleInputChange}
+                            placeholder="Enter company website"
+                        />
+                        <FormField
+                            label="Company Address"
+                            name="companyAddress"
+                            required 
+                            value={formData.companyAddress}
+                            onChange={handleInputChange}
+                            placeholder="Enter company address"
+                        />
+                        <FormField
+                            label="Company Email"
+                            name="companyEmail"
+                            type="email"
+                            required 
+                            value={formData.companyEmail}
+                            onChange={handleInputChange}
+                            placeholder="Enter company email"
+                        />
+                        <FormField
+                            label="Company Phone"
+                            name="companyPhone"
+                            type="tel"
+                            required
+                            value={formData.companyPhone}
+                            onChange={handleInputChange}
+                            placeholder="Enter company phone"
+                        />
+                        <FormField 
+                            label="Valuation Cap (USD)"
+                            name="valuationCap" 
+                            type="number"
+                            required 
+                            placeholder="Enter valuation cap" 
+                            value={formData.valuationCap}
+                            onChange={handleInputChange} 
+                        />
+                        <FormField  
+                            label="Funding Goal (USD)"
+                            name="fundingGoal"
+                            type="number" 
+                            required 
+                            placeholder="Enter funding goal" 
+                            value={formData.fundingGoal} 
+                            onChange={handleInputChange} 
+                        />
+                        <FormField 
+                            label="Min Investment (USD)"
+                            name="minInvestment" 
+                            type="number" 
+                            required 
+                            placeholder="Enter minimum investment" 
+                            value={formData.minInvestment} 
+                            onChange={handleInputChange} 
+                            />
+                        <FormField 
+                            name="maxInvestment" 
+                            label="Max Investment (USD)" 
+                            type="number" 
+                            required 
+                            placeholder="Enter maximum investment" 
+                            value={formData.maxInvestment} 
+                            onChange={handleInputChange} 
+                        />
+                        <div className="flex justify-between">
+                            <button
+                                type="button"
+                                onClick={() => navigate('/')}
+                                className="w-full mr-2 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className="w-full ml-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            >
+                                Submit
+                            </button>
                         </div>
-                    </div>
-                </form>
-                <div className="flex justify-between mt-8">
-                    <button onClick={() => navigate('/')} className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Cancel
-                    </button>
-                    <button onClick={() => handleSubmit} className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Submit
-                    </button>
+                    </form>
                 </div>
             </div>
         </div>
-        
     );
 };
 
-export default StartupSignUp;
+export default InvestorSignUp;
