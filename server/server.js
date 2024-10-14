@@ -20,7 +20,7 @@ const __dirname = path.dirname(__filename);
 app.use('/images', express.static(path.join(__dirname, '../client/src/images')));
 
 // Fetch specific startup by ID
-app.get("/api/StartUps/:id", async (req, res) => {
+app.get("/api/startups/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const startup = await prisma.startUp.findUnique({ where: { id: parseInt(id) } });
@@ -91,6 +91,43 @@ app.get("/api/featured-deals", async (req, res) => {
     res.status(500).json({ error: "Error fetching featured deals" });
   }
 });
+
+// Fetch startups by types
+app.get("/api/business-type", async (req, res) => {
+  try {
+    const { type } = req.query;
+
+    const startups = await prisma.startUp.findMany({
+      where: type ? { company_business_type: type } : {},
+    });
+
+    const mappedStartups = startups.map(startup => {
+      const raised = (startup.investments || []).reduce((sum, investment) => sum + investment.investment_amount, 0);
+      const percentRaised = startup.funding_goal ? (raised / startup.funding_goal) * 100 : 0;
+
+      return {
+        id: startup.id,
+        company_name: startup.company_name,
+        company_logo: startup.company_logo,
+        company_background: startup.company_background,
+        company_description: startup.company_description,
+        category: startup.company_business_type,
+        funding_goal: startup.funding_goal,
+        raised: raised,
+        percentRaised: Math.round(percentRaised),
+        date: startup.deadline,
+        description: startup.opportunity,
+      };
+    });
+
+    res.json(mappedStartups);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error fetching startups" });
+  }
+});
+
+
 
 // Start the Express server
 app.listen(PORT, () => {
