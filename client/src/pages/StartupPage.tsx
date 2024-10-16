@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import StickyNavbar from './components/Navbar';
 import StickyFooter from './components/Footer';
 import { useParams } from "react-router-dom";
@@ -53,12 +54,10 @@ const StartupPage: React.FC = () => {
 
     useEffect(() => {
         const fetchStartup = async () => {
+            setLoading(true);
             try {
-                const response = await fetch(`http://localhost:3001/api/StartUps/${id}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch startup data');
-                }
-                const data: StartUp = await response.json();
+                const response = await axios.get(`http://localhost:3001/api/startups/${id}`);
+                const data: StartUp = response.data;
                 setStartup(data);
             } catch (err: unknown) {
                 if (err instanceof Error) {

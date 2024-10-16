@@ -28,6 +28,26 @@ function FilterType({ onFilter }: { onFilter: (filter: string) => void }) {
         navigate('/technologystartup');
         window.scrollTo(0, 0);
     }
+
+    else if (filterName === 'Lifestyle') {
+        navigate('/lifestylestartup');
+        window.scrollTo(0, 0);
+    }
+
+    else if (filterName === 'Cosmetic') {
+        navigate('/cosmeticstartup');
+        window.scrollTo(0, 0);
+    }
+
+    else if (filterName === 'Architect and Engineer') {
+        navigate('/architecturestartup');
+        window.scrollTo(0, 0);
+    }
+
+    else if (filterName === 'Art and Design') {
+        navigate('/artstartup');
+        window.scrollTo(0, 0);
+    }
   };
 
   return (
