@@ -11,6 +11,10 @@ import StartupFormPage from './pages/StartupFormPage'
 import AdminPanel from './pages/Adminpanelpage';
 import AllStartUpPage from './pages/AllStartUpPage';
 import TechnologyStartUpPage from './pages/TechnologyPage';
+import LifestylePage from "./pages/LifestylePage";
+import CosmeticPage from "./pages/CosmeticPage";
+import ArchitecturePage from "./pages/ArchitecturePage";
+import ArtPage from "./pages/ArtPage";
 import PrehomePage from "./pages/PrehomePage";
 import IndexPage from './pages/IndexPage';
 import InvestorSignUp from './pages/InvestorFormPage';
@@ -26,6 +30,10 @@ function App() {
         <Route path="/adminpanel" element={<AdminPanel />} />
         <Route path="/allstartup" element={<AllStartUpPage />} />
         <Route path="/technologystartup" element={<TechnologyStartUpPage />} />
+        <Route path="/lifestylestartup" element={<LifestylePage />} />
+        <Route path="/cosmeticstartup" element={<CosmeticPage />} />
+        <Route path="/architecturestartup" element={<ArchitecturePage />} />
+        <Route path="/artstartup" element={<ArtPage />} />
         <Route path="/index" element={<IndexPage />} />
         <Route path="/investorform" element={<InvestorSignUp />} />
         <Route path="/" element={<PrehomePage />} />
