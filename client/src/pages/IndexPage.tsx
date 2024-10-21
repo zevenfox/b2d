@@ -16,24 +16,30 @@ const Index: React.FC = () => {
         setLoginData(prevState => ({ ...prevState, [name]: value }));
     };
 
-    const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Retrieve stored data
-        const storedInvestorUsername = localStorage.getItem('investorUsername');
-        const storedInvestorPassword = localStorage.getItem('investorPassword');
-        const storedStartupUsername = localStorage.getItem('startupUsername');
-        const storedStartupPassword = localStorage.getItem('startupPassword');
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginData),
+            });
 
-        // Match username and password
-        if (
-            (loginData.username === storedInvestorUsername && loginData.password === storedInvestorPassword) ||
-            (loginData.username === storedStartupUsername && loginData.password === storedStartupPassword)
-        ) {
-            toast.success('Login successful!');
-            navigate('/home');
-        } else {
-            toast.error('Invalid username or password');
+            const data = await response.json();
+
+            if (response.ok) {
+                toast.success('Login successful!');
+                localStorage.setItem('token', data.token); // Save the token for authentication
+                navigate('/home');
+            } else {
+                toast.error(data.error || 'Login failed');
+            }
+        } catch (error) {
+            console.error('Error logging in:', error);
+            toast.error('Error logging in');
         }
     };
 

@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import { fileURLToPath } from 'url'; // Needed for __dirname with ES modules
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { hashPassword, comparePassword, generateToken, authenticateToken } from './auth.js';
 
 const prisma = new PrismaClient();
 const app = express();
@@ -28,12 +29,96 @@ const s3Client = new S3Client({
     },
 });
 
-// Setting up __dirname for ES Modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+app.post('/api/register', async (req, res) => {
+  const {
+      username, password, first_name, last_name, email, role,
+      // StartUp specific fields
+      valuation_cap, funding_goal, min_investment, max_investment, deadline,
+      opportunity, opportunity_image, product, product_image, business_model, business_model_image,
+      company_name, company_description, company_logo, company_background,
+      company_business_type, company_email, company_website, company_telephone, company_address
+  } = req.body;
 
-// Serve static images
-app.use('/images', express.static(path.join(__dirname, '../client/src/images')));
+  try {
+      const hashedPassword = await hashPassword(password);
+      // Create user record
+      const newUser = await prisma.user.create({
+          data: {
+              username,
+              password: hashedPassword,
+              first_name,
+              last_name,
+              email,
+              role,
+          },
+      });
+
+      // Depending on the role, create additional records
+      if (role === 'start_up') {
+          // Create additional data for startups
+          await prisma.startUp.create({
+              data: {
+                  user_id: newUser.id,
+                  valuation_cap,
+                  funding_goal,
+                  min_investment,
+                  max_investment,
+                  deadline,
+                  opportunity,
+                  opportunity_image,
+                  product,
+                  product_image,
+                  business_model,
+                  business_model_image,
+                  company_name,
+                  company_description,
+                  company_logo,
+                  company_background,
+                  company_business_type,
+                  company_email,
+                  company_website,
+                  company_telephone,
+                  company_address,
+              },
+          });
+      }
+
+      res.status(201).json({ message: 'User registered successfully', user: newUser });
+  } catch (error) {
+      console.error('Error registering user:', error);
+      res.status(500).json({ error: 'Error registering user.' });
+  }
+});
+
+
+// Login User
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({ where: { username } });
+
+    if (!user) return res.status(400).json({ error: 'User not found.' });
+
+    const isPasswordValid = await comparePassword(password, user.password);
+    if (!isPasswordValid) return res.status(400).json({ error: 'Invalid credentials.' });
+
+    const token = generateToken(user);
+    const expiresIn = 3600; // 1 hour
+    res.json({ message: 'Login successful', token, expiresIn });
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).json({ error: 'Error logging in.' });
+  }
+});
+
+
+// // Setting up __dirname for ES Modules
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
+
+// // Serve static images
+// app.use('/images', express.static(path.join(__dirname, '../client/src/images')));
 
 // Fetch specific startup by ID
 app.get("/api/startups/:id", async (req, res) => {
