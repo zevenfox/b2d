@@ -51,15 +51,30 @@ app.get("/api/startups/:id", async (req, res) => {
 });
 
 // Fetch all startups
-app.get("/api/startups", async (req, res) => {
+app.get("/api/allstartups", async (req, res) => {
   try {
-    const startups = await prisma.startUp.findMany({
-      select: {
-        company_name: true,
-        id: true,
-      },
+
+    const startups = await prisma.startUp.findMany();
+
+    const mappedStartups = startups.map(startup => {
+      const raised = (startup.investments || []).reduce((sum, investment) => sum + investment.investment_amount, 0);
+      const percentRaised = startup.funding_goal ? (raised / startup.funding_goal) * 100 : 0;
+
+      return {
+        id: startup.id,
+        company_name: startup.company_name,
+        company_logo: startup.company_logo,
+        company_background: startup.company_background,
+        company_description: startup.company_description,
+        category: startup.company_business_type,
+        funding_goal: startup.funding_goal,
+        raised: raised,
+        percentRaised: Math.round(percentRaised),
+        date: startup.deadline,
+        description: startup.opportunity,
+      };
     });
-    res.json(startups);
+    res.json(mappedStartups);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error fetching startups" });

@@ -3,6 +3,12 @@ import GithubLogo from '../../images/mini-github-icon.png';
 import GmailLogo from '../../images/mini-gmail-icon.png';
 
 const Footer = () => {
+
+    const openGmailCompose = () => {
+        const email = "b2d.venture@gmail.com";
+        window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}`, '_blank');
+    };
+
     return (
         <footer className="w-full h-48 bg-[#0C1A2A] flex justify-around items-center px-8 md:px-16">
             <div>
@@ -37,8 +43,10 @@ const Footer = () => {
                     Contact us?
                 </h1>
                 <div className="flex px-4 pt-2 justify-between">
-                    <img src={GithubLogo} alt="GithubLogo" className="size-8"/>
-                    <img src={GmailLogo} alt="GmailLogo" className="size-8"/>
+                    <a href="https://github.com/zevenfox/b2d" ><img src={GithubLogo} alt="GithubLogo" className="size-8"/></a>
+                    <div onClick={openGmailCompose} className="cursor-pointer">
+                        <img src={GmailLogo} alt="Gmail Logo" className="size-8"/>
+                    </div>
                 </div>
             </div>
         </footer>
