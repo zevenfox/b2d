@@ -1,31 +1,29 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 
 interface FormData {
-    // User fields
     username: string;
     password: string;
     first_name: string;
     last_name: string;
     email: string;
     role: string;
-    
-    // Startup specific fields
     valuation_cap: number;
     funding_goal: number;
     min_investment: number;
     max_investment: number;
     deadline: string;
     opportunity: string;
-    opportunity_image: File | null;
+    opportunity_image: string | null;
     product: string;
-    product_image: File | null;
+    product_image: string | null;
     business_model: string;
-    business_model_image: File | null;
+    business_model_image: string | null;
     company_name: string;
     company_description: string;
-    company_logo: File | null;
+    company_logo: string | null;
     company_background: string;
     company_business_type: string;
     company_email: string;
@@ -86,15 +84,12 @@ const FileInput: React.FC<{
 const StartupSignUp: React.FC = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState<FormData>({
-        // User fields
         username: '',
         password: '',
         first_name: '',
         last_name: '',
         email: '',
         role: 'start_up',
-        
-        // Startup fields
         valuation_cap: 0,
         funding_goal: 0,
         min_investment: 0,
@@ -134,26 +129,23 @@ const StartupSignUp: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        
-        try {
-            const response = await fetch('http://localhost:3001/api/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
+        const formDataToSubmit = new FormData();
+        for (const [key, value] of Object.entries(formData)) {
+            formDataToSubmit.append(key, value);
+        }
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Registration failed');
-            }
+        try {
+            const response = await axios.post('http://localhost:3001/api/register/startup', formDataToSubmit, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
 
             toast.success('Sign up successful!');
             navigate('/home');
         } catch (error) {
             console.error('Error signing up:', error);
-            toast.error(error instanceof Error ? error.message : 'Sign up failed. Please try again.');
+            toast.error('Sign up failed. Please try again.');
         }
     };
 
@@ -225,6 +217,7 @@ const StartupSignUp: React.FC = () => {
                         <FileInput
                             label="Company Logo"
                             name="company_logo"
+                            required
                             onChange={handleFileChange}
                         />
                         <FormField

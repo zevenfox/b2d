@@ -197,7 +197,7 @@ const InvestorSignUp: React.FC = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:3001/api/register', {
+            const response = await fetch('http://localhost:3001/api/register/investor', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
