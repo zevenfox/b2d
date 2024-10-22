@@ -31,62 +31,85 @@ const s3Client = new S3Client({
 
 app.post('/api/register', async (req, res) => {
   const {
-      username, password, first_name, last_name, email, role,
-      // StartUp specific fields
-      valuation_cap, funding_goal, min_investment, max_investment, deadline,
-      opportunity, opportunity_image, product, product_image, business_model, business_model_image,
-      company_name, company_description, company_logo, company_background,
-      company_business_type, company_email, company_website, company_telephone, company_address
+    username, password, first_name, last_name, email, role,
+    // StartUp specific fields
+    valuation_cap, funding_goal, min_investment, max_investment, deadline,
+    opportunity, opportunity_image, product, product_image, business_model, business_model_image,
+    company_name, company_description, company_logo, company_background,
+    company_business_type, company_email, company_website, company_telephone, company_address
   } = req.body;
 
   try {
-      const hashedPassword = await hashPassword(password);
-      // Create user record
-      const newUser = await prisma.user.create({
-          data: {
-              username,
-              password: hashedPassword,
-              first_name,
-              last_name,
-              email,
-              role,
+    // Check if the username already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { username }
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ error: 'Username already taken' });
+    }
+
+    // Hash the password
+    const hashedPassword = await hashPassword(password);
+
+    // Create user record
+    const newUser = await prisma.user.create({
+      data: {
+        username,
+        password: hashedPassword,
+        first_name,
+        last_name,
+        email,
+        role,
+      },
+    });
+
+    // Depending on the role, create additional records for startups
+    if (role === 'start_up') {
+      // Convert the deadline to ISO-8601 format
+      const formattedDeadline = new Date(deadline).toISOString();
+
+      await prisma.startUp.create({
+        data: {
+          valuation_cap,
+          funding_goal,
+          min_investment,
+          max_investment,
+          deadline: formattedDeadline,
+          opportunity,
+          opportunity_image,
+          product,
+          product_image,
+          business_model,
+          business_model_image,
+          company_name,
+          company_description,
+          company_logo,
+          company_background,
+          company_business_type,
+          company_email,
+          company_website,
+          company_telephone,
+          company_address,
+          // Link the newUser to the StartUp record
+          user: {
+            connect: { id: newUser.id },
           },
+        },
       });
+    }
 
-      // Depending on the role, create additional records
-      if (role === 'start_up') {
-          // Create additional data for startups
-          await prisma.startUp.create({
-              data: {
-                  user_id: newUser.id,
-                  valuation_cap,
-                  funding_goal,
-                  min_investment,
-                  max_investment,
-                  deadline,
-                  opportunity,
-                  opportunity_image,
-                  product,
-                  product_image,
-                  business_model,
-                  business_model_image,
-                  company_name,
-                  company_description,
-                  company_logo,
-                  company_background,
-                  company_business_type,
-                  company_email,
-                  company_website,
-                  company_telephone,
-                  company_address,
-              },
-          });
-      }
-
-      res.status(201).json({ message: 'User registered successfully', user: newUser });
+    // Return success response
+    res.status(201).json({ message: 'User registered successfully', user: newUser });
   } catch (error) {
-      console.error('Error registering user:', error);
-      res.status(500).json({ error: 'Error registering user.' });
+    console.error('Error registering user:', error);
+
+    // Handle unique constraint error specifically
+    if (error.code === 'P2002' && error.meta && error.meta.target === 'User_username_key') {
+      return res.status(400).json({ error: 'Username already taken' });
+    }
+
+    res.status(500).json({ error: 'Error registering user.' });
   }
 });
 
