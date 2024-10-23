@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { X } from "lucide-react";
 
 interface InvestProps {
@@ -6,6 +6,15 @@ interface InvestProps {
 }
 
 const Invest: React.FC<InvestProps> = ({ onClose }) => {
+    const [investmentAmount, setInvestmentAmount] = useState<string>("");
+
+    // Handler to ensure only positive integers
+    const handleInvestmentAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (/^\d*$/.test(value)) {  // Only allow digits (positive integers)
+            setInvestmentAmount(value);
+        }
+    };
     return (
         <div className='fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center'>
             <div className='bg-white p-6 rounded-lg shadow-lg w-96'>
@@ -24,6 +33,8 @@ const Invest: React.FC<InvestProps> = ({ onClose }) => {
                             name="investmentamount"
                             type="number"
                             required
+                            value={investmentAmount}
+                            onChange={handleInvestmentAmountChange}
                             placeholder="Enter Investment Amount (USD)"
                             className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
                         />
