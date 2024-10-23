@@ -20,7 +20,7 @@ const Index: React.FC = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch('/api/login', {
+            const response = await fetch('http://localhost:3001/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -33,7 +33,16 @@ const Index: React.FC = () => {
             if (response.ok) {
                 toast.success('Login successful!');
                 localStorage.setItem('token', data.token); // Save the token for authentication
-                navigate('/home');
+                localStorage.setItem('role', data.role); // Save the user's role
+                
+                //TODO: Navigate based on the user role when ready
+                if (data.role === 'investor') {
+                    navigate('/home');
+                } else if (data.role === 'start_up') {
+                    navigate('/home');
+                } else {
+                    navigate('/home'); // Default navigation if role is not set
+                }
             } else {
                 toast.error(data.error || 'Login failed');
             }
