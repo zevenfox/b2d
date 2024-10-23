@@ -1,11 +1,16 @@
 import React from "react";
 import { X } from "lucide-react";
 
-function Invest() {
+interface InvestProps {
+    onClose: () => void;
+}
+
+const Invest: React.FC<InvestProps> = ({ onClose }) => {
     return (
         <div className='fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center'>
             <div className='bg-white p-6 rounded-lg shadow-lg w-96'>
-                <button className='text-gray-500 hover:text-gray-700 float-right'>
+                <button className='text-gray-500 hover:text-gray-700 float-right'
+                    onClick={onClose}>
                     <X />
                 </button>
                 <h2 className='text-2xl font-bold mb-4 text-center'>Invest Now</h2>
