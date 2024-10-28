@@ -34,6 +34,7 @@ const Index: React.FC = () => {
                 toast.success('Login successful!');
                 localStorage.setItem('token', data.token); // Save the token for authentication
                 localStorage.setItem('role', data.role); // Save the user's role
+                localStorage.setItem('user_name', data.username);
                 
                 //TODO: Navigate based on the user role when ready
                 if (data.role === 'investor') {
