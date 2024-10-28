@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 interface FormData {
     username: string;
     password: string;
+    confirmPassword: string;
     first_name: string;
     last_name: string;
     email: string;
@@ -19,7 +20,8 @@ const FormField: React.FC<{
     value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     placeholder?: string;
-}> = ({ label, name, type = "text", required = false, value, onChange, placeholder }) => (
+    hasError?: boolean;
+}> = ({ label, name, type = "text", required = false, value, onChange, placeholder, hasError }) => (
     <div className="mb-4">
         <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
             {label}
@@ -33,8 +35,11 @@ const FormField: React.FC<{
             value={value}
             onChange={onChange}
             placeholder={placeholder}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${hasError ? 'border-red-500' : 'border-gray-300'}`}
         />
+        {hasError && name === 'confirmPassword' && (
+            <p className="mt-1 text-sm text-red-500">Passwords do not match</p>
+        )}
     </div>
 );
 
@@ -43,38 +48,57 @@ const InvestorSignUp: React.FC = () => {
     const [formData, setFormData] = useState<FormData>({
         username: '',
         password: '',
+        confirmPassword: '',
         first_name: '',
         last_name: '',
         email: '',
         role: 'investor'
     });
+    const [passwordsMatch, setPasswordsMatch] = useState(true);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prevState => ({ ...prevState, [name]: value }));
+
+        // Check if passwords match when either password field changes
+        if (name === 'password') {
+            setPasswordsMatch(value === formData.confirmPassword);
+        } else if (name === 'confirmPassword') {
+            setPasswordsMatch(formData.password === value);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        if (formData.password !== formData.confirmPassword) {
+            toast.error('Passwords do not match.');
+            setPasswordsMatch(false);
+            return;
+        }
+
         try {
+            // Create a new object without the confirmPassword field
+            const { confirmPassword, ...submitData } = formData;
+
             const response = await fetch('http://localhost:3001/api/register/investor', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(submitData), // Send data without confirmPassword
             });
 
             if (!response.ok) {
-                throw new Error('Sign up failed');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Sign up failed');
             }
 
             toast.success('Sign up successful!');
             navigate('/home');
         } catch (error) {
             console.error('Error during sign up:', error);
-            toast.error('Sign up failed. Please try again.');
+            toast.error(error instanceof Error ? error.message : 'Sign up failed. Please try again.');
         }
     };
 
@@ -104,6 +128,16 @@ const InvestorSignUp: React.FC = () => {
                             value={formData.password}
                             onChange={handleInputChange}
                             placeholder="Enter your password"
+                        />
+                        <FormField
+                            label="Confirm Password"
+                            name="confirmPassword"
+                            type="password"
+                            required
+                            value={formData.confirmPassword}
+                            onChange={handleInputChange}
+                            placeholder="Confirm your password"
+                            hasError={!passwordsMatch}
                         />
                         <FormField
                             label="First Name"
