@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 interface FormData {
     username: string;
     password: string;
+    confirmPassword: string;
     first_name: string;
     last_name: string;
     email: string;
@@ -40,7 +41,8 @@ const FormField: React.FC<{
     value: string | number;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     placeholder?: string;
-}> = ({ label, name, type = "text", required = false, value, onChange, placeholder }) => (
+    hasError?: boolean;
+}> = ({ label, name, type = "text", required = false, value, onChange, placeholder,hasError }) => (
     <div className="mb-4">
         <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
             {label}
@@ -56,6 +58,9 @@ const FormField: React.FC<{
             placeholder={placeholder}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
+        {hasError && name === 'confirmPassword' && (
+            <p className="mt-1 text-sm text-red-500">Passwords do not match</p>
+        )}
     </div>
 );
 
@@ -86,6 +91,7 @@ const StartupSignUp: React.FC = () => {
     const [formData, setFormData] = useState<FormData>({
         username: '',
         password: '',
+        confirmPassword: '',
         first_name: '',
         last_name: '',
         email: '',
@@ -111,13 +117,21 @@ const StartupSignUp: React.FC = () => {
         company_telephone: '',
         company_address: '',
     });
+    const [passwordsMatch, setPasswordsMatch] = useState(true)
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
         setFormData(prevState => ({
             ...prevState,
             [name]: type === 'number' ? Number(value) : value
         }));
+
+        // Check if passwords match when either password field changes
+        if (name === 'password') {
+            setPasswordsMatch(value === formData.confirmPassword);
+        } else if (name === 'confirmPassword') {
+            setPasswordsMatch(formData.password === value);
+        }
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,6 +149,9 @@ const StartupSignUp: React.FC = () => {
         }
 
         try {
+            // Create a new object without the confirmPassword field
+            const { confirmPassword, ...submitData } = formData;
+
             const response = await axios.post('http://localhost:3001/api/register/startup', formDataToSubmit, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -177,6 +194,16 @@ const StartupSignUp: React.FC = () => {
                             value={formData.password}
                             onChange={handleInputChange}
                             placeholder="Enter your password"
+                        />
+                        <FormField
+                            label="Confirm Password"
+                            name="confirmPassword"
+                            type="password"
+                            required
+                            value={formData.confirmPassword}
+                            onChange={handleInputChange}
+                            placeholder="Confirm your password"
+                            hasError={!passwordsMatch}
                         />
                         <FormField
                             label="First Name"
@@ -237,12 +264,11 @@ const StartupSignUp: React.FC = () => {
                             placeholder="Enter company background"
                         />
                         <FormField
-                            label="Business Type"
-                            name="company_business_type"
+                            label="Company Business Type"
+                            name="companyBusinessType"
                             required
                             value={formData.company_business_type}
                             onChange={handleInputChange}
-                            placeholder="Enter business type"
                         />
 
                         {/* Business Details Section */}
