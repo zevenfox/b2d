@@ -42,7 +42,8 @@ const FormField: React.FC<{
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     placeholder?: string;
     hasError?: boolean;
-}> = ({ label, name, type = "text", required = false, value, onChange, placeholder,hasError }) => (
+    min?: number;
+}> = ({ label, name, type = "text", required = false, value, onChange, placeholder,hasError,min }) => (
     <div className="mb-4">
         <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
             {label}
@@ -132,6 +133,22 @@ const StartupSignUp: React.FC = () => {
         } else if (name === 'confirmPassword') {
             setPasswordsMatch(formData.password === value);
         }
+
+        if (type === 'number') {
+            const parsedValue = parseInt(value, 10);
+            if (parsedValue >= 0 || value === '') {
+                setFormData(prevState => ({
+                    ...prevState,
+                    [name]: parsedValue,
+                }));
+            }
+        } else {
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: value,
+            }));
+        }
+    
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -330,6 +347,7 @@ const StartupSignUp: React.FC = () => {
                             value={formData.valuation_cap}
                             onChange={handleInputChange}
                             placeholder="Enter valuation cap"
+                            min={1}
                         />
                         <FormField
                             label="Funding Goal"
@@ -339,6 +357,7 @@ const StartupSignUp: React.FC = () => {
                             value={formData.funding_goal}
                             onChange={handleInputChange}
                             placeholder="Enter funding goal"
+                            min={1}
                         />
                         <FormField
                             label="Minimum Investment"
@@ -348,6 +367,7 @@ const StartupSignUp: React.FC = () => {
                             value={formData.min_investment}
                             onChange={handleInputChange}
                             placeholder="Enter minimum investment"
+                            min={1}
                         />
                         <FormField
                             label="Maximum Investment"
@@ -357,6 +377,7 @@ const StartupSignUp: React.FC = () => {
                             value={formData.max_investment}
                             onChange={handleInputChange}
                             placeholder="Enter maximum investment"
+                            min={1}
                         />
                         <FormField
                             label="Deadline"
