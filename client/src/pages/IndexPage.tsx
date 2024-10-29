@@ -40,9 +40,9 @@ const Index: React.FC = () => {
                 if (data.role === 'investor') {
                     navigate('/home');
                 } else if (data.role === 'start_up') {
-                    navigate('/home');
+                    navigate('/adminpanel');
                 } else {
-                    navigate('/home'); // Default navigation if role is not set
+                    navigate('/'); // Default navigation if role is not set
                 }
             } else {
                 toast.error(data.error || 'Login failed');
