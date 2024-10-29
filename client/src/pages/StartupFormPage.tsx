@@ -39,7 +39,7 @@ const FormField: React.FC<{
     type?: string;
     required?: boolean;
     value: string | number;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     placeholder?: string;
     hasError?: boolean;
     min?: number;
@@ -84,6 +84,37 @@ const FileInput: React.FC<{
             onChange={onChange}
             className="w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
+    </div>
+);
+
+const SelectField: React.FC<{
+    label: string;
+    name: string;
+    required?: boolean;
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    options: { value: string; label: string }[];
+}> = ({ label, name, required = false, value, onChange, options }) => (
+    <div className="mb-4">
+        <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
+            {label}
+            {required && <span className="text-red-500 ml-1">*</span>}
+        </label>
+        <select
+            id={name}
+            name={name}
+            required={required}
+            value={value}
+            onChange={onChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+            <option value="" disabled>Select business type</option>
+            {options.map((option) => (
+                <option key={option.value} value={option.value}>
+                    {option.label}
+                </option>
+            ))}
+        </select>
     </div>
 );
 
@@ -287,12 +318,19 @@ const StartupSignUp: React.FC = () => {
                             onChange={handleInputChange}
                             placeholder="Enter company background"
                         />
-                        <FormField
+                        <SelectField
                             label="Company Business Type"
-                            name="companyBusinessType"
+                            name="company_business_type"
                             required
                             value={formData.company_business_type}
                             onChange={handleInputChange}
+                            options={[
+                                { value: 'lifestyle', label: 'Lifestyle' },
+                                { value: 'cosmetics', label: 'Cosmetics' },
+                                { value: 'technology', label: 'Technology' },
+                                { value: 'architecture', label: 'Architect and Engineer' },
+                                { value: 'arts', label: 'Art and Design' },
+                            ]}
                         />
 
                         {/* Business Details Section */}
