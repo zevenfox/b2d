@@ -153,6 +153,11 @@ const StartupSignUp: React.FC = () => {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
+
+        if ((name === 'company_telephone' || name === 'valuation_cap' || name === 'funding_goal' || name === 'min_investment' || name === 'max_investment') && !/^\d*$/.test(value)) {
+            return; // If not a number, exit the function without updating state
+        }
+
         setFormData(prevState => ({
             ...prevState,
             [name]: type === 'number' ? Number(value) : value
@@ -380,8 +385,8 @@ const StartupSignUp: React.FC = () => {
                         <FormField
                             label="Valuation Cap"
                             name="valuation_cap"
-                            type="number"
                             required
+                            type="tel"
                             value={formData.valuation_cap}
                             onChange={handleInputChange}
                             placeholder="Enter valuation cap"
@@ -390,8 +395,8 @@ const StartupSignUp: React.FC = () => {
                         <FormField
                             label="Funding Goal"
                             name="funding_goal"
-                            type="number"
                             required
+                            type="tel"
                             value={formData.funding_goal}
                             onChange={handleInputChange}
                             placeholder="Enter funding goal"
@@ -400,7 +405,7 @@ const StartupSignUp: React.FC = () => {
                         <FormField
                             label="Minimum Investment"
                             name="min_investment"
-                            type="number"
+                            type="tel"
                             required
                             value={formData.min_investment}
                             onChange={handleInputChange}
@@ -410,7 +415,7 @@ const StartupSignUp: React.FC = () => {
                         <FormField
                             label="Maximum Investment"
                             name="max_investment"
-                            type="number"
+                            type="tel"
                             required
                             value={formData.max_investment}
                             onChange={handleInputChange}
@@ -449,6 +454,7 @@ const StartupSignUp: React.FC = () => {
                             label="Company Phone"
                             name="company_telephone"
                             required
+                            type="tel"
                             value={formData.company_telephone}
                             onChange={handleInputChange}
                             placeholder="Enter company phone"
