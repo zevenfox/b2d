@@ -383,6 +383,42 @@ app.get("/api/business-type", async (req, res) => {
   }
 });
 
+app.post('/api/invest', authenticateToken, async (req, res) => {
+  const { investment_amount, startup_id } = req.body;
+  const { username } = req.user;
+
+  try {
+    const user = await prisma.user.findUnique({ where: { username } });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const startup = await prisma.startUp.findUnique({ where: { id: parseInt(startup_id) });
+    if (!startup) {
+      return res.status(404).json({ error: 'Startup not found' });
+    }
+
+    const investment = await prisma.investment.create({
+      data: {
+        investment_amount: parseFloat(investment_amount),
+        user: {
+          connect: { id: user.id },
+        },
+        startUp: {
+          connect: { id: startup.id },
+        },
+      },
+    });
+
+    res.json({ message: 'Investment successful', investment });
+  } catch (error) {
+    console.error('Error during investment:', error);
+    res.status(500).json({ error: 'Error during investment' });
+  }
+}
+});
+
+
 // Start the Express server
 app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}/`);
