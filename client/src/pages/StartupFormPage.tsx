@@ -42,7 +42,7 @@ const FormField: React.FC<{
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     placeholder?: string;
     hasError?: boolean;
-    min?: number;
+    min?: number | string;
 }> = ({ label, name, type = "text", required = false, value, onChange, placeholder,hasError,min }) => (
     <div className="mb-4">
         <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
@@ -57,6 +57,7 @@ const FormField: React.FC<{
             value={value}
             onChange={onChange}
             placeholder={placeholder}
+            min={min}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         {hasError && name === 'confirmPassword' && (
@@ -429,6 +430,7 @@ const StartupSignUp: React.FC = () => {
                             required
                             value={formData.deadline}
                             onChange={handleInputChange}
+                            min={new Date().toISOString().split('T')[0]}
                         />
 
                         {/* Contact Information Section */}
