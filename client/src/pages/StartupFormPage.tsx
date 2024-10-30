@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 interface FormData {
     username: string;
     password: string;
+    confirmPassword: string;
     first_name: string;
     last_name: string;
     email: string;
@@ -38,9 +39,11 @@ const FormField: React.FC<{
     type?: string;
     required?: boolean;
     value: string | number;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     placeholder?: string;
-}> = ({ label, name, type = "text", required = false, value, onChange, placeholder }) => (
+    hasError?: boolean;
+    min?: number | string;
+}> = ({ label, name, type = "text", required = false, value, onChange, placeholder,hasError,min }) => (
     <div className="mb-4">
         <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
             {label}
@@ -54,8 +57,12 @@ const FormField: React.FC<{
             value={value}
             onChange={onChange}
             placeholder={placeholder}
+            min={min}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
+        {hasError && name === 'confirmPassword' && (
+            <p className="mt-1 text-sm text-red-500">Passwords do not match</p>
+        )}
     </div>
 );
 
@@ -81,11 +88,43 @@ const FileInput: React.FC<{
     </div>
 );
 
+const SelectField: React.FC<{
+    label: string;
+    name: string;
+    required?: boolean;
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    options: { value: string; label: string }[];
+}> = ({ label, name, required = false, value, onChange, options }) => (
+    <div className="mb-4">
+        <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
+            {label}
+            {required && <span className="text-red-500 ml-1">*</span>}
+        </label>
+        <select
+            id={name}
+            name={name}
+            required={required}
+            value={value}
+            onChange={onChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+            <option value="" disabled>Select business type</option>
+            {options.map((option) => (
+                <option key={option.value} value={option.value}>
+                    {option.label}
+                </option>
+            ))}
+        </select>
+    </div>
+);
+
 const StartupSignUp: React.FC = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState<FormData>({
         username: '',
         password: '',
+        confirmPassword: '',
         first_name: '',
         last_name: '',
         email: '',
@@ -111,13 +150,42 @@ const StartupSignUp: React.FC = () => {
         company_telephone: '',
         company_address: '',
     });
+    const [passwordsMatch, setPasswordsMatch] = useState(true)
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
+
+        if ((name === 'company_telephone' || name === 'valuation_cap' || name === 'funding_goal' || name === 'min_investment' || name === 'max_investment') && !/^\d*$/.test(value)) {
+            return; // If not a number, exit the function without updating state
+        }
+
         setFormData(prevState => ({
             ...prevState,
             [name]: type === 'number' ? Number(value) : value
         }));
+
+        // Check if passwords match when either password field changes
+        if (name === 'password') {
+            setPasswordsMatch(value === formData.confirmPassword);
+        } else if (name === 'confirmPassword') {
+            setPasswordsMatch(formData.password === value);
+        }
+
+        if (type === 'number') {
+            const parsedValue = parseInt(value, 10);
+            if (parsedValue >= 0 || value === '') {
+                setFormData(prevState => ({
+                    ...prevState,
+                    [name]: parsedValue,
+                }));
+            }
+        } else {
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: value,
+            }));
+        }
+    
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,6 +203,9 @@ const StartupSignUp: React.FC = () => {
         }
 
         try {
+            // Create a new object without the confirmPassword field
+            const { confirmPassword, ...submitData } = formData;
+
             const response = await axios.post('http://localhost:3001/api/register/startup', formDataToSubmit, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -151,6 +222,13 @@ const StartupSignUp: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+            <button
+                type="button"
+                onClick={() => navigate('/index')}
+                className="absolute top-4 left-4 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+                Back
+            </button>
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
                     Sign Up as Startup
@@ -177,6 +255,16 @@ const StartupSignUp: React.FC = () => {
                             value={formData.password}
                             onChange={handleInputChange}
                             placeholder="Enter your password"
+                        />
+                        <FormField
+                            label="Confirm Password"
+                            name="confirmPassword"
+                            type="password"
+                            required
+                            value={formData.confirmPassword}
+                            onChange={handleInputChange}
+                            placeholder="Confirm your password"
+                            hasError={!passwordsMatch}
                         />
                         <FormField
                             label="First Name"
@@ -236,13 +324,19 @@ const StartupSignUp: React.FC = () => {
                             onChange={handleInputChange}
                             placeholder="Enter company background"
                         />
-                        <FormField
-                            label="Business Type"
+                        <SelectField
+                            label="Company Business Type"
                             name="company_business_type"
                             required
                             value={formData.company_business_type}
                             onChange={handleInputChange}
-                            placeholder="Enter business type"
+                            options={[
+                                { value: 'lifestyle', label: 'Lifestyle' },
+                                { value: 'cosmetics', label: 'Cosmetics' },
+                                { value: 'technology', label: 'Technology' },
+                                { value: 'architecture', label: 'Architect and Engineer' },
+                                { value: 'arts', label: 'Art and Design' },
+                            ]}
                         />
 
                         {/* Business Details Section */}
@@ -292,38 +386,42 @@ const StartupSignUp: React.FC = () => {
                         <FormField
                             label="Valuation Cap"
                             name="valuation_cap"
-                            type="number"
                             required
+                            type="tel"
                             value={formData.valuation_cap}
                             onChange={handleInputChange}
                             placeholder="Enter valuation cap"
+                            min={1}
                         />
                         <FormField
                             label="Funding Goal"
                             name="funding_goal"
-                            type="number"
                             required
+                            type="tel"
                             value={formData.funding_goal}
                             onChange={handleInputChange}
                             placeholder="Enter funding goal"
+                            min={1}
                         />
                         <FormField
                             label="Minimum Investment"
                             name="min_investment"
-                            type="number"
+                            type="tel"
                             required
                             value={formData.min_investment}
                             onChange={handleInputChange}
                             placeholder="Enter minimum investment"
+                            min={1}
                         />
                         <FormField
                             label="Maximum Investment"
                             name="max_investment"
-                            type="number"
+                            type="tel"
                             required
                             value={formData.max_investment}
                             onChange={handleInputChange}
                             placeholder="Enter maximum investment"
+                            min={1}
                         />
                         <FormField
                             label="Deadline"
@@ -332,6 +430,7 @@ const StartupSignUp: React.FC = () => {
                             required
                             value={formData.deadline}
                             onChange={handleInputChange}
+                            min={new Date().toISOString().split('T')[0]}
                         />
 
                         {/* Contact Information Section */}
@@ -357,6 +456,7 @@ const StartupSignUp: React.FC = () => {
                             label="Company Phone"
                             name="company_telephone"
                             required
+                            type="tel"
                             value={formData.company_telephone}
                             onChange={handleInputChange}
                             placeholder="Enter company phone"
@@ -373,7 +473,7 @@ const StartupSignUp: React.FC = () => {
                         <div className="flex justify-between">
                             <button
                                 type="button"
-                                onClick={() => navigate('/')}
+                                onClick={() => navigate('/index')}
                                 className="w-full mr-2 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                                 Cancel
