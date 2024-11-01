@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import StickyNavbar from './components/Navbar';
 import StickyFooter from './components/Footer';
+import ConfirmationModal from './components/ConfirmationModal';
 
 interface InvestmentRequest {
     id: number;
@@ -19,6 +20,9 @@ const AdminPanel: React.FC = () => {
     const [investmentRequests, setInvestmentRequests] = useState<InvestmentRequest[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null);
+    const [actionType, setActionType] = useState<'accepted' | 'declined' | null>(null);
 
     const fetchInvestmentRequests = async () => {
         setLoading(true); // Set loading state
@@ -26,11 +30,7 @@ const AdminPanel: React.FC = () => {
             const response = await axios.get(`http://localhost:3001/api/investment_requests/${user_id}`);
             const pendingRequests = response.data.investment_requests?.filter((request: InvestmentRequest) => request.status === 'pending') || [];
 
-            if (pendingRequests.length > 0) {
-                setInvestmentRequests(pendingRequests);
-            } else {
-                setInvestmentRequests([]); // Clear requests if no pending ones
-            }
+            setInvestmentRequests(pendingRequests);
         } catch (err) {
             if (axios.isAxiosError(err)) {
                 setError(err.response?.data?.error || 'Failed to fetch investment requests');
@@ -46,14 +46,29 @@ const AdminPanel: React.FC = () => {
         if (user_id) fetchInvestmentRequests();
     }, [user_id]);
 
-    const handleUpdateStatus = async (id: number, newStatus: 'accepted' | 'declined') => {
-        try {
-            await axios.put(`http://localhost:3001/api/investment_requests/${id}`, { status: newStatus });
-            // Reload the investment requests
-            fetchInvestmentRequests(); // Call the function to refresh the data
-        } catch (err) {
-            console.error('Error updating investment request:', err);
-            setError('Failed to update investment request');
+    const handleOpenModal = (id: number, type: 'accepted' | 'declined') => {
+        setSelectedRequestId(id);
+        setActionType(type);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedRequestId(null);
+        setActionType(null);
+    };
+
+    const handleConfirm = async () => {
+        if (selectedRequestId !== null && actionType) {
+            try {
+                await axios.put(`http://localhost:3001/api/investment_requests/${selectedRequestId}`, { status: actionType });
+                fetchInvestmentRequests(); // Call the function to refresh the data
+            } catch (err) {
+                console.error('Error updating investment request:', err);
+                setError('Failed to update investment request');
+            } finally {
+                handleCloseModal(); // Close modal after action
+            }
         }
     };
 
@@ -95,13 +110,13 @@ const AdminPanel: React.FC = () => {
                                         <div className="flex justify-center space-x-2">
                                             <button
                                                 className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
-                                                onClick={() => handleUpdateStatus(item.id, 'accepted')}
+                                                onClick={() => handleOpenModal(item.id, 'accepted')}
                                             >
                                                 Approve
                                             </button>
                                             <button
                                                 className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
-                                                onClick={() => handleUpdateStatus(item.id, 'declined')}
+                                                onClick={() => handleOpenModal(item.id, 'declined')}
                                             >
                                                 Decline
                                             </button>
@@ -121,6 +136,12 @@ const AdminPanel: React.FC = () => {
                 </div>
             </div>
             <StickyFooter />
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                onConfirm={handleConfirm}
+                actionType={actionType}
+            />
         </div>
     );
 };
