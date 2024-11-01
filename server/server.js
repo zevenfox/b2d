@@ -220,7 +220,7 @@ app.post('/api/login', async (req, res) => {
 
     const token = generateToken(user);
     const expiresIn = 3600; // 1 hour
-    res.json({ message: 'Login successful', token, expiresIn, username: user.username, role: user.role});
+    res.json({ message: 'Login successful', token, expiresIn, username: user.username, role: user.role, id: user.id});
   } catch (error) {
     console.error('Error during login:', error);
     res.status(500).json({ error: 'Error logging in.' });
