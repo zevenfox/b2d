@@ -65,7 +65,6 @@ const AdminPanel: React.FC = () => {
                     <h1 className="text-2xl font-bold mb-6 text-gray-800">{localStorage.getItem("user_name")}'s Investment Requests</h1>
                     {loading && <p>Loading...</p>}
                     {error && <p className="text-red-500">{error}</p>}
-                    {investmentRequests.length === 0 && !loading && <p>No investment requests available for this user.</p>}
                     <table className="min-w-full bg-white border-collapse">
                         <thead>
                         <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -77,41 +76,51 @@ const AdminPanel: React.FC = () => {
                         </tr>
                         </thead>
                         <tbody className="text-gray-700 text-sm font-light">
-                        {investmentRequests.map((item, index) => (
-                            <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
-                                <td className="py-3 px-6 text-left whitespace-nowrap">
-                                    <span className="font-medium">{item.first_name} {item.last_name}</span>
-                                </td>
-                                <td className="py-3 px-6 text-left">
-                                    <span>{item.email}</span>
-                                </td>
-                                <td className="py-3 px-6 text-left">
-                                    <span>${item.investment_amount}</span>
-                                </td>
-                                <td className="py-3 px-6 text-left">
-                                    <span>{item.reason}</span>
-                                </td>
-                                <td className="py-3 px-6 text-center">
-                                    <button
-                                        className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded mb-1"
-                                        onClick={() => handleUpdateStatus(item.id, 'accepted')}
-                                    >
-                                        Approve
-                                    </button>
-                                    <button
-                                        className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded mb-1"
-                                        onClick={() => handleUpdateStatus(item.id, 'declined')}
-                                    >
-                                        Decline
-                                    </button>
+                        {investmentRequests.length > 0 ? (
+                            investmentRequests.map((item, index) => (
+                                <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
+                                    <td className="py-3 px-6 text-left whitespace-nowrap">
+                                        <span className="font-medium">{item.first_name} {item.last_name}</span>
+                                    </td>
+                                    <td className="py-3 px-6 text-left">
+                                        <span>{item.email}</span>
+                                    </td>
+                                    <td className="py-3 px-6 text-left">
+                                        <span>${item.investment_amount}</span>
+                                    </td>
+                                    <td className="py-3 px-6 text-left">
+                                        <span>{item.reason}</span>
+                                    </td>
+                                    <td className="py-3 px-6 text-center">
+                                        <div className="flex justify-center space-x-2">
+                                            <button
+                                                className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
+                                                onClick={() => handleUpdateStatus(item.id, 'accepted')}
+                                            >
+                                                Approve
+                                            </button>
+                                            <button
+                                                className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
+                                                onClick={() => handleUpdateStatus(item.id, 'declined')}
+                                            >
+                                                Decline
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={5} className="py-3 px-6 text-center">
+                                    <p className="text-gray-500">No investment requests available for you.</p>
                                 </td>
                             </tr>
-                        ))}
+                        )}
                         </tbody>
                     </table>
                 </div>
             </div>
-            <StickyFooter/>
+            <StickyFooter />
         </div>
     );
 };
