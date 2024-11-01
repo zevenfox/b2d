@@ -22,6 +22,7 @@ const Navbar: React.FC = () => {
         localStorage.removeItem('user_name');
         localStorage.removeItem('role');
         localStorage.removeItem('token');
+        localStorage.removeItem('id');
         setUsername(null);
         setIsLoggedIn(false);
         navigate('/index');
