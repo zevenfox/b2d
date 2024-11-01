@@ -391,7 +391,6 @@ app.get('/api/investment_requests/:id', async (req, res) => {
     // Fetch pending investment deals for the specified startup_id
     const investmentRequests = await prisma.investmentDeal.findMany({
       where: {
-        status: 'pending',
         startup_id: Number(id), // Ensure id is converted to a number if needed
       },
     });
@@ -425,6 +424,7 @@ app.get('/api/investment_requests/:id', async (req, res) => {
 
     // Format the response by combining investment requests with user details
     const formattedRequests = investmentRequests.map(deal => ({
+      id: deal.id,
       first_name: userMap[deal.investor_user_id]?.first_name || null,
       last_name: userMap[deal.investor_user_id]?.last_name || null,
       email: userMap[deal.investor_user_id]?.email || null,
@@ -440,6 +440,23 @@ app.get('/api/investment_requests/:id', async (req, res) => {
   }
 });
 
+app.put('/api/investment_requests/:id', async (req, res) => {
+  const { id } = req.params; // Get the investment request ID from the URL
+  const { status } = req.body; // Get the new status from the request body
+
+  try {
+    // Update the investment request status
+    const updatedRequest = await prisma.investmentDeal.update({
+      where: { id: Number(id) }, // Ensure id is converted to a number
+      data: { status }, // Set the new status
+    });
+
+    res.json(updatedRequest);
+  } catch (err) {
+    console.error('Error updating investment request:', err.message);
+    return res.status(500).json({ error: 'Database update failed', details: err.message });
+  }
+});
 
 // Start the Express server
 app.listen(PORT, () => {

@@ -5,12 +5,13 @@ import StickyNavbar from './components/Navbar';
 import StickyFooter from './components/Footer';
 
 interface InvestmentRequest {
+    id: number;
     first_name: string;
     last_name: string;
     email: string;
     investment_amount: number;
     reason: string;
-    username: string;
+    status: 'pending' | 'accepted' | 'declined';
 }
 
 const AdminPanel: React.FC = () => {
@@ -19,24 +20,42 @@ const AdminPanel: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchInvestmentRequests = async () => {
-            try {
-                const response = await axios.get(`http://localhost:3001/api/investment_requests/${user_id}`);
-                setInvestmentRequests(response.data.investment_requests || []);
-            } catch (err) {
-                if (axios.isAxiosError(err)) {
-                    setError(err.response?.data?.error || 'Failed to fetch investment requests');
-                } else {
-                    setError('An unexpected error occurred');
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchInvestmentRequests = async () => {
+        setLoading(true); // Set loading state
+        try {
+            const response = await axios.get(`http://localhost:3001/api/investment_requests/${user_id}`);
+            const pendingRequests = response.data.investment_requests?.filter((request: InvestmentRequest) => request.status === 'pending') || [];
 
+            if (pendingRequests.length > 0) {
+                setInvestmentRequests(pendingRequests);
+            } else {
+                setInvestmentRequests([]); // Clear requests if no pending ones
+            }
+        } catch (err) {
+            if (axios.isAxiosError(err)) {
+                setError(err.response?.data?.error || 'Failed to fetch investment requests');
+            } else {
+                setError('An unexpected error occurred');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         if (user_id) fetchInvestmentRequests();
     }, [user_id]);
+
+    const handleUpdateStatus = async (id: number, newStatus: 'accepted' | 'declined') => {
+        try {
+            await axios.put(`http://localhost:3001/api/investment_requests/${id}`, { status: newStatus });
+            // Reload the investment requests
+            fetchInvestmentRequests(); // Call the function to refresh the data
+        } catch (err) {
+            console.error('Error updating investment request:', err);
+            setError('Failed to update investment request');
+        }
+    };
 
     return (
         <div>
@@ -73,8 +92,18 @@ const AdminPanel: React.FC = () => {
                                     <span>{item.reason}</span>
                                 </td>
                                 <td className="py-3 px-6 text-center">
-                                    <button className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded mb-1">Approve</button>
-                                    <button className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded mb-1">Decline</button>
+                                    <button
+                                        className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded mb-1"
+                                        onClick={() => handleUpdateStatus(item.id, 'accepted')}
+                                    >
+                                        Approve
+                                    </button>
+                                    <button
+                                        className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded mb-1"
+                                        onClick={() => handleUpdateStatus(item.id, 'declined')}
+                                    >
+                                        Decline
+                                    </button>
                                 </td>
                             </tr>
                         ))}
@@ -82,7 +111,7 @@ const AdminPanel: React.FC = () => {
                     </table>
                 </div>
             </div>
-            <StickyFooter />
+            <StickyFooter/>
         </div>
     );
 };
