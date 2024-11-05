@@ -393,7 +393,7 @@ app.post('/api/invest', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const startup = await prisma.startUp.findUnique({ where: { id: parseInt(startup_id) });
+    const startup = await prisma.startUp.findUnique({ where: { id: parseInt(startup_id) }});
     if (!startup) {
       return res.status(404).json({ error: 'Startup not found' });
     }
@@ -415,7 +415,6 @@ app.post('/api/invest', authenticateToken, async (req, res) => {
     console.error('Error during investment:', error);
     res.status(500).json({ error: 'Error during investment' });
   }
-}
 });
 
 
