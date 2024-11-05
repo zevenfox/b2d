@@ -206,7 +206,11 @@ const StartupPage: React.FC = () => {
                 <p className="mt-4 text-black text-xl pb-16">{startup.company_description}</p>
             </div>
             {isInvestPopupOpen && (
-                <Invest onClose={() => setIsInvestPopupOpen(false)} />
+                <Invest
+                    onClose={() => setIsInvestPopupOpen(false)}
+                    minInvestment={startup.min_investment}
+                    maxInvestment={startup.max_investment}
+                />
             )}
             <StickyFooter />
         </div>

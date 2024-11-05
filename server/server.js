@@ -384,39 +384,67 @@ app.get("/api/business-type", async (req, res) => {
 });
 
 app.post('/api/invest', authenticateToken, async (req, res) => {
-  const { investment_amount, startup_id } = req.body;
-  const { username } = req.user;
-
   try {
-    const user = await prisma.user.findUnique({ where: { username } });
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+    const { investment_amount, startup_id, reason } = req.body;
+    const { id: investor_user_id } = req.user; // Assuming the user id is stored in the token
+
+    // Input validation
+    if (!investment_amount || !startup_id || !reason) {
+      return res.status(400).json({
+        message: "Investment amount, startup ID, and reason are required"
+      });
     }
 
-    const startup = await prisma.startUp.findUnique({ where: { id: parseInt(startup_id) }});
-    if (!startup) {
-      return res.status(404).json({ error: 'Startup not found' });
-    }
-
-    const investment = await prisma.investment.create({
-      data: {
-        investment_amount: parseFloat(investment_amount),
-        user: {
-          connect: { id: user.id },
-        },
-        startUp: {
-          connect: { id: startup.id },
-        },
-      },
+    // Fetch startup to verify it exists and check investment limits
+    const startup = await prisma.startUp.findUnique({
+      where: { id: startup_id }
     });
 
-    res.json({ message: 'Investment successful', investment });
+    if (!startup) {
+      return res.status(404).json({ message: "Startup not found" });
+    }
+
+    // Validate investment amount against min/max limits
+    if (investment_amount < startup.min_investment) {
+      return res.status(400).json({
+        message: `Minimum investment amount is $${startup.min_investment}`
+      });
+    }
+
+    if (investment_amount > startup.max_investment) {
+      return res.status(400).json({
+        message: `Maximum investment amount is $${startup.max_investment}`
+      });
+    }
+
+    // Check if funding deadline has passed
+    if (new Date() > new Date(startup.deadline)) {
+      return res.status(400).json({ message: "Investment deadline has passed" });
+    }
+
+    // Create the investment deal
+    const investmentDeal = await prisma.investmentDeal.create({
+      data: {
+        investor_user_id: investor_user_id,
+        startup_id: parseInt(startup_id),
+        investment_amount: parseFloat(investment_amount),
+        reason: reason,
+        status: 'pending' // Assuming this is one of your DealStatus enum values
+      }
+    });
+
+    res.status(201).json({
+      message: "Investment submitted successfully",
+      data: investmentDeal
+    });
+
   } catch (error) {
-    console.error('Error during investment:', error);
-    res.status(500).json({ error: 'Error during investment' });
+    console.error('Investment creation error:', error);
+    res.status(500).json({
+      message: "An error occurred while processing your investment"
+    });
   }
 });
-
 
 // Start the Express server
 app.listen(PORT, () => {
