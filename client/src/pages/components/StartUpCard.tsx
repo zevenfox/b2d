@@ -134,7 +134,7 @@ function StartUpCard({ limit }: StartUpCardProps) {
   const handleCardClick = (id: number) => {
     // Implement redirection when the startup page is ready
     // navigate(`/startup/${id}`);
-    console.log(`Clicked on startup with ID: ${id}`);
+    navigate(`/startups/${id}`);
     window.scrollTo(0, 0);
   };
 

@@ -220,7 +220,7 @@ app.post('/api/login', async (req, res) => {
 
     const token = generateToken(user);
     const expiresIn = 3600; // 1 hour
-    res.json({ message: 'Login successful', token, expiresIn, username: user.username, role: user.role});
+    res.json({ message: 'Login successful', token, expiresIn, username: user.username, role: user.role, id: user.id});
   } catch (error) {
     console.error('Error during login:', error);
     res.status(500).json({ error: 'Error logging in.' });
@@ -380,6 +380,81 @@ app.get("/api/business-type", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error fetching startups" });
+  }
+});
+
+// Get API to show all upcoming investment requests
+app.get('/api/investment_requests/:id', async (req, res) => {
+  const { id } = req.params; // Extract startup_id from the route parameters
+
+  try {
+    // Fetch pending investment deals for the specified startup_id
+    const investmentRequests = await prisma.investmentDeal.findMany({
+      where: {
+        startup_id: Number(id), // Ensure id is converted to a number if needed
+      },
+    });
+
+    // If no investment requests are found, return an appropriate response
+    if (investmentRequests.length === 0) {
+      return res.status(404).json({ message: 'No investment requests found for this startup' });
+    }
+
+    // Get the IDs of users from the investment requests
+    const userIds = investmentRequests.map(deal => deal.investor_user_id);
+
+    // Fetch users corresponding to those IDs
+    const users = await prisma.user.findMany({
+      where: {
+        id: { in: userIds }, // Fetch users whose IDs are in the userIds array
+      },
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+      },
+    });
+
+    // Create a mapping of users by their IDs
+    const userMap = {};
+    users.forEach(user => {
+      userMap[user.id] = user;
+    });
+
+    // Format the response by combining investment requests with user details
+    const formattedRequests = investmentRequests.map(deal => ({
+      id: deal.id,
+      first_name: userMap[deal.investor_user_id]?.first_name || null,
+      last_name: userMap[deal.investor_user_id]?.last_name || null,
+      email: userMap[deal.investor_user_id]?.email || null,
+      investment_amount: deal.investment_amount,
+      reason: deal.reason,
+      status: deal.status,
+    }));
+
+    res.json({ investment_requests: formattedRequests });
+  } catch (err) {
+    console.error('Error fetching investment requests:', err.message);
+    return res.status(500).json({ error: 'Database query failed', details: err.message });
+  }
+});
+
+app.put('/api/investment_requests/:id', async (req, res) => {
+  const { id } = req.params; // Get the investment request ID from the URL
+  const { status } = req.body; // Get the new status from the request body
+
+  try {
+    // Update the investment request status
+    const updatedRequest = await prisma.investmentDeal.update({
+      where: { id: Number(id) }, // Ensure id is converted to a number
+      data: { status }, // Set the new status
+    });
+
+    res.json(updatedRequest);
+  } catch (err) {
+    console.error('Error updating investment request:', err.message);
+    return res.status(500).json({ error: 'Database update failed', details: err.message });
   }
 });
 
