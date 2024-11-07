@@ -35,12 +35,13 @@ const Index: React.FC = () => {
                 localStorage.setItem('token', data.token); // Save the token for authentication
                 localStorage.setItem('role', data.role); // Save the user's role
                 localStorage.setItem('user_name', data.username);
+                localStorage.setItem('id', data.id);
                 
                 //TODO: Navigate based on the user role when ready
                 if (data.role === 'investor') {
                     navigate('/home');
                 } else if (data.role === 'start_up') {
-                    navigate('/adminpanel');
+                    navigate(`/adminpanel/${localStorage.getItem('id')}`);
                 } else {
                     navigate('/'); // Default navigation if role is not set
                 }

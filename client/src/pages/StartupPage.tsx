@@ -48,7 +48,7 @@ const Skeleton: React.FC = () => (
 );
 
 const StartupPage: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
     const [startup, setStartup] = useState<StartUp | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -96,6 +96,9 @@ const StartupPage: React.FC = () => {
     }
 
     const fundingPercentage = Math.min(100, (startup.funding_goal / startup.valuation_cap) * 100);
+    const defaultImage = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+        e.currentTarget.style.display = "none";
+    };
 
     return (
         <div className="text-left bg-white">
@@ -103,7 +106,7 @@ const StartupPage: React.FC = () => {
             <header className="mx-auto px-56 py-16 text-left">
                 <div className="flex items-start">
                     <div className="flex-shrink-0">
-                        <img src={startup.company_logo} alt="Logo" className="size-16" />
+                        <img src={startup.company_logo} alt="Logo" className="size-16" onError={defaultImage} />
                     </div>
                     <div className="flex-grow ml-8">
                         <h1 className="text-6xl font-bold">{startup.company_name}</h1>
@@ -114,7 +117,7 @@ const StartupPage: React.FC = () => {
             <div className="mx-auto px-56 text-left">
                 <div className="flex items-start">
                     <div className="flex-grow">
-                        <img src={`http://localhost:3000${startup.opportunity_image}`} alt="Highlight" className="w-full" />
+                        <img src={startup.opportunity_image} alt="Highlight" className="w-full" onError={defaultImage}/>
                     </div>
                     <div className="flex-none ml-16">
                         <div className="bg-black text-white p-6 rounded-md w-72">
@@ -187,7 +190,7 @@ const StartupPage: React.FC = () => {
             </div>
             <div className="mx-auto px-56 text-left">
                 <h1 className="text-3xl font-bold pt-16">Product</h1>
-                <img src={startup.product_image} alt="Product" className="size-4/5 pt-16" />
+                <img src={startup.product_image} alt="Product" className="size-4/5 pt-16" onError={defaultImage}/>
                 <p className="mt-4 text-black text-xl pt-16">{startup.product}</p>
                 <div className="pt-16">
                     <div className="h-px flex-auto bg-gray-300"></div>
@@ -195,7 +198,7 @@ const StartupPage: React.FC = () => {
             </div>
             <div className="mx-auto px-56 text-left">
                 <h1 className="text-3xl font-bold pt-16">Business Model</h1>
-                <img src={startup.business_model_image} alt="Business Model" className="size-4/5 pt-16" />
+                <img src={startup.business_model_image} alt="Business Model" className="size-4/5 pt-16" onError={defaultImage}/>
                 <p className="mt-4 text-black text-xl pt-16">{startup.business_model}</p>
                 <div className="pt-16">
                     <div className="h-px flex-auto bg-gray-300"></div>

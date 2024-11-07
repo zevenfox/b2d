@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import {useNavigate} from "react-router-dom";
 import Stock from "../images/stock.png";
 import Partner from "../images/partner.png";
 import BarAnimation from "./components/AnimatedBars";
 
 function PrehomePage() {
     const [isVisible, setIsVisible] = useState(false);
+    const navigate = useNavigate();
 
     // Trigger fade up animation after the component mounts
     useEffect(() => {
@@ -13,6 +15,20 @@ function PrehomePage() {
         }, 300); // Start animation after a small delay
         return () => clearTimeout(timer);
     }, []);
+
+    useEffect(() => {
+        const userName = localStorage.getItem("user_name");
+        if (userName) {
+            // Redirect to home or admin panel based on user role
+            const userRole = localStorage.getItem("role");
+            if (userRole === "investor") {
+                navigate("/home");
+            } else if (userRole === "start_up") {
+                const userId = localStorage.getItem("id");
+                navigate(`/adminpanel/${userId}`);
+            }
+        }
+    }, [navigate]);
 
     return (
         <div>

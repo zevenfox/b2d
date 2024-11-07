@@ -48,7 +48,7 @@ function App() {
           />
 
           <Route
-              path="/adminpanel"
+              path="/adminpanel/:user_id"
               element={
                 <ProtectedRoute>
                   <AdminPanel />
