@@ -22,7 +22,6 @@ const Invest: React.FC<InvestProps> = ({ onClose, minInvestment, maxInvestment }
     const [error, setError] = useState<string>("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Handler to ensure only positive integers
     const handleInvestmentAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         if (/^\d*$/.test(value)) {
@@ -34,7 +33,6 @@ const Invest: React.FC<InvestProps> = ({ onClose, minInvestment, maxInvestment }
         e.preventDefault();
         setError("");
 
-        // Validation
         const amount = Number(investmentAmount);
         if (!amount || amount <= 0) {
             setError("Please enter a valid investment amount");
@@ -59,29 +57,30 @@ const Invest: React.FC<InvestProps> = ({ onClose, minInvestment, maxInvestment }
         const investmentData: InvestmentFormData = {
             investment_amount: amount,
             reason: reason.trim(),
-            startup_id: Number(startupId)
+            startup_id: Number(startupId),
         };
 
         try {
             setIsSubmitting(true);
-            // Get token from localStorage
             const token = localStorage.getItem('token');
+            if (!token) {
+                setError("User authentication is required to proceed.");
+                return;
+            }
 
             const response = await axios.post(
                 'http://localhost:3001/api/invest',
                 investmentData,
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
                 }
             );
 
             if (response.status === 200 || response.status === 201) {
-                // Success! Close the modal and maybe show a success message
                 onClose();
-                // You might want to trigger a refresh of the parent component here
             }
         } catch (err) {
             if (axios.isAxiosError(err)) {

@@ -22,17 +22,26 @@ export const generateToken = (user) => {
 
 // Authenticate Token Middleware
 export const authenticateToken = (req, res, next) => {
-  const token = req.headers['authorization'];
-  
-  if (!token) {
+  const authHeader = req.headers['authorization'];
+
+  // Check if token is present
+  if (!authHeader) {
     return res.status(401).json({ error: 'Access denied. No token provided.' });
   }
 
+  // Check if the token is in the expected "Bearer <token>" format
+  const token = authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ error: 'Invalid token format.' });
+  }
+
   try {
-    const decoded = jwt.verify(token.split(" ")[1], JWT_SECRET);
-    req.user = decoded;
+    // Verify the token and set req.user
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;  // Attach the decoded user data to req.user
     next();
   } catch (error) {
-    res.status(401).json({ error: 'Invalid token.' });
+    console.error("Token verification error:", error);
+    res.status(401).json({ error: 'Invalid or expired token.' });
   }
 };

@@ -50,9 +50,9 @@ model StartUp {
 model InvestmentDeal {
   id                 Int       @id @default(autoincrement())
   investor_user_id   Int
-  investor           User      @relation(fields: [investor_user_id], references: [id])
-  startup_id         Int       // Foreign key to StartUp
-  startup            StartUp   @relation(fields: [startup_id], references: [id])
+  investor           User      @relation(fields: [investor_user_id], references: [id], onDelete: Cascade)
+  startup_id         Int
+  startup            StartUp   @relation(fields: [startup_id], references: [id], onDelete: Cascade)
   investment_amount  Float
   reason             String
   status             DealStatus
