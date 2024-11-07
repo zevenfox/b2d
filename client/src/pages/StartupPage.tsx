@@ -30,6 +30,17 @@ interface StartUp {
     company_address: string;
 }
 
+interface InvestmentRequest {
+    id: number;
+    investor_user_id: number;
+    startup_id: number;
+    investment_amount: number;
+    reason: string;
+    status: string;
+    created_at: string;
+    updated_at: string;
+}
+
 const Skeleton: React.FC = () => (
     <div className="animate-pulse">
         <div className="flex items-start mb-6">
@@ -53,6 +64,7 @@ const StartupPage: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [isInvestPopupOpen, setIsInvestPopupOpen] = useState<boolean>(false);  // Popup state
+    const [investmentRequests, setInvestmentRequests] = useState<InvestmentRequest[]>([]);
 
     useEffect(() => {
         const fetchStartup = async () => {
@@ -72,7 +84,23 @@ const StartupPage: React.FC = () => {
             }
         };
 
+        const fetchInvestmentRequests = async () => {
+            try {
+                if (id) { // Check if `id` is defined
+                    const response = await axios.get(`http://localhost:3001/api/investor_requests/${localStorage.getItem('id')}`);
+                    const filteredRequests = response.data.filter((request: InvestmentRequest) => request.startup_id === parseInt(id));
+                    setInvestmentRequests(filteredRequests);
+                } else {
+                    // Handle the case when `id` is undefined
+                    setError('Startup ID is undefined.');
+                }
+            } catch (err: unknown) {
+                setError('An error occurred while fetching investment requests.');
+            }
+        };
+
         fetchStartup();
+        fetchInvestmentRequests();
     }, [id]);
 
     if (loading) {
@@ -99,6 +127,8 @@ const StartupPage: React.FC = () => {
     const defaultImage = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
         e.currentTarget.style.display = "none";
     };
+
+    const hasPendingRequest = investmentRequests.some((request) => request.status === "pending");
 
     return (
         <div className="text-left bg-white">
@@ -135,10 +165,11 @@ const StartupPage: React.FC = () => {
                             </div>
                             <div>Left to invest</div>
                             <button
-                                className="mt-6 bg-[#C3FF73] text-black w-full py-2 font-bold rounded"
-                                onClick={() => setIsInvestPopupOpen(true)}  // Open popup on click
+                                className={`mt-6 w-full py-2 font-bold rounded ${hasPendingRequest ? 'bg-yellow-500 text-black' : 'bg-[#C3FF73] text-black'}`}
+                                onClick={() => !hasPendingRequest && setIsInvestPopupOpen(true)}  // Open popup only if no pending request
+                                disabled={hasPendingRequest}  // Disable button if pending request exists
                             >
-                                Invest in {startup.company_name}
+                                {hasPendingRequest ? "Pending" : `Invest in ${startup.company_name}`}
                             </button>
                             <div className="mt-4 text-center">${startup.min_investment} minimum investment</div>
                         </div>
@@ -151,7 +182,7 @@ const StartupPage: React.FC = () => {
                             {startup.company_background}
                         </p>
                         <div className="pt-32">
-                            <div className="h-px flex-auto bg-gray-300"></div>
+                        <div className="h-px flex-auto bg-gray-300"></div>
                         </div>
                     </div>
                     <div className="flex-none ml-16">
