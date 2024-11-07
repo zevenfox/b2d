@@ -3,6 +3,7 @@ import axios from "axios";
 import StickyNavbar from './components/Navbar';
 import StickyFooter from './components/Footer';
 import { useParams } from "react-router-dom";
+import Invest from './components/Invest';
 
 interface StartUp {
     id: number;
@@ -51,6 +52,7 @@ const StartupPage: React.FC = () => {
     const [startup, setStartup] = useState<StartUp | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [isInvestPopupOpen, setIsInvestPopupOpen] = useState<boolean>(false);  // Popup state
 
     useEffect(() => {
         const fetchStartup = async () => {
@@ -132,7 +134,10 @@ const StartupPage: React.FC = () => {
                                 {Math.ceil((new Date(startup.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days
                             </div>
                             <div>Left to invest</div>
-                            <button className="mt-6 bg-[#C3FF73] text-black w-full py-2 font-bold rounded">
+                            <button
+                                className="mt-6 bg-[#C3FF73] text-black w-full py-2 font-bold rounded"
+                                onClick={() => setIsInvestPopupOpen(true)}  // Open popup on click
+                            >
                                 Invest in {startup.company_name}
                             </button>
                             <div className="mt-4 text-center">${startup.min_investment} minimum investment</div>
@@ -203,6 +208,13 @@ const StartupPage: React.FC = () => {
                 <h1 className="text-3xl font-bold pt-16">Company Info</h1>
                 <p className="mt-4 text-black text-xl pb-16">{startup.company_description}</p>
             </div>
+            {isInvestPopupOpen && (
+                <Invest
+                    onClose={() => setIsInvestPopupOpen(false)}
+                    minInvestment={startup.min_investment}
+                    maxInvestment={startup.max_investment}
+                />
+            )}
             <StickyFooter />
         </div>
     );

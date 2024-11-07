@@ -91,7 +91,7 @@ app.post('/api/register/investor', async (req, res) => {
 
     res.status(500).json({ error: 'Error registering investor.' });
   }
-});
+  });
 
 app.post('/api/register/startup', upload.fields([
   { name: 'opportunity_image', maxCount: 1 },
@@ -383,6 +383,92 @@ app.get("/api/business-type", async (req, res) => {
   }
 });
 
+
+app.post('/api/invest', authenticateToken, async (req, res) => {
+  try {
+    const { investment_amount, startup_id, reason } = req.body;
+    console.log('User Data:', req.user);
+
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+
+    const { userId: investor_user_id, role } = req.user;
+
+    // Role verification
+    if (role !== 'investor') {
+      return res.status(403).json({ message: "Only investors can make an investment" });
+    }
+
+    // Input validation
+    if (!investment_amount || !startup_id || !reason) {
+      return res.status(400).json({
+        message: "Investment amount, startup ID, and reason are required"
+      });
+    }
+
+    // Fetch the startup
+    const startup = await prisma.startUp.findUnique({
+      where: { id: startup_id }
+    });
+
+    if (!startup) {
+      return res.status(404).json({ message: "Startup not found" });
+    }
+
+    // Validate investment amount
+    if (investment_amount < startup.min_investment) {
+      return res.status(400).json({
+        message: `Minimum investment amount is $${startup.min_investment}`
+      });
+    }
+
+    if (investment_amount > startup.max_investment) {
+      return res.status(400).json({
+        message: `Maximum investment amount is $${startup.max_investment}`
+      });
+    }
+
+    // Check if deadline has passed
+    if (new Date() > new Date(startup.deadline)) {
+      return res.status(400).json({ message: "Investment deadline has passed" });
+    }
+
+    // Create the investment
+    const investmentDeal = await prisma.investmentDeal.create({
+      data: {
+        investor_user_id,
+        startup_id,
+        investment_amount: parseFloat(investment_amount),
+        reason,
+        status: 'pending',
+        created_at: new Date(),
+        updated_at: new Date()
+      }
+    });
+
+    res.status(201).json({
+      message: "Investment submitted successfully",
+      data: investmentDeal
+    });
+
+  } catch (error) {
+    console.error('Investment creation error:', error);
+    if (error instanceof prisma.PrismaClientKnownRequestError) {
+      return res.status(500).json({
+        message: error.message,
+        code: error.code,
+      });
+    }
+    return res.status(500).json({
+      message: "An error occurred while processing your investment",
+      error: error.message
+    });
+  }
+});
+
+
+
 // Get API to show all upcoming investment requests
 app.get('/api/investment_requests/:id', async (req, res) => {
   const { id } = req.params; // Extract startup_id from the route parameters
@@ -457,6 +543,7 @@ app.put('/api/investment_requests/:id', async (req, res) => {
     return res.status(500).json({ error: 'Database update failed', details: err.message });
   }
 });
+
 
 // Start the Express server
 app.listen(PORT, () => {
