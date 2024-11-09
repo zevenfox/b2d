@@ -544,6 +544,29 @@ app.put('/api/investment_requests/:id', async (req, res) => {
   }
 });
 
+app.get('/api/investor_requests/:id', async (req, res) => {
+  const { id } = req.params; // Extract the investment deal ID from the route parameters
+
+  try {
+    const investmentDeal = await prisma.investmentDeal.findMany({
+      where: {
+        investor_user_id: Number(id), // Ensure id is converted to a number
+      },
+    });
+
+    // If no investment deal is found, return a 404 status
+    if (!investmentDeal) {
+      return res.status(404).json({ message: 'Investment request not found' });
+    }
+
+    // Return the investment deal as the response
+    res.json(investmentDeal);
+  } catch (err) {
+    console.error('Error fetching investment request:', err.message);
+    return res.status(500).json({ error: 'Failed to fetch investment request', details: err.message });
+  }
+});
+
 
 // Start the Express server
 app.listen(PORT, () => {

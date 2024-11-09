@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import {useParams} from "react-router-dom";
 
 interface InvestProps {
     onClose: () => void;
@@ -81,6 +81,7 @@ const Invest: React.FC<InvestProps> = ({ onClose, minInvestment, maxInvestment }
 
             if (response.status === 200 || response.status === 201) {
                 onClose();
+                window.location.reload();
             }
         } catch (err) {
             if (axios.isAxiosError(err)) {
