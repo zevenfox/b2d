@@ -167,9 +167,9 @@ const StartupPage: React.FC = () => {
                             </div>
                             <div>Left to invest</div>
                             <button
-                                className={`mt-6 w-full py-2 font-bold rounded ${hasPendingRequest ? 'bg-yellow-500 text-black' : dayLeft === 0 ? 'bg-red-500 text-white' : 'bg-[#C3FF73] text-black'}`}
+                                className={`mt-6 w-full py-2 font-bold rounded ${hasPendingRequest ? 'bg-yellow-500 text-black' : dayLeft === 0 || startup.funding_goal >= startup.valuation_cap ? 'bg-red-500 text-white' : 'bg-[#C3FF73] text-black'}`}
                                 onClick={() => !hasPendingRequest && setIsInvestPopupOpen(true)}  // Open popup only if no pending request
-                                disabled={hasPendingRequest || dayLeft === 0}  // Disable button if pending request exists
+                                disabled={hasPendingRequest || dayLeft === 0 || startup.funding_goal >= startup.valuation_cap}  // Disable button if pending request exists
                             >
                                 {hasPendingRequest ? "Pending" : dayLeft === 0 ? "Investment Closed" : `Invest in ${startup.company_name}`}
                             </button>
