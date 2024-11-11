@@ -29,7 +29,14 @@ function App() {
           <Route path="/index" element={<IndexPage />} />
           <Route path="/investorform" element={<InvestorSignUp />}/>
           <Route path="/startupform" element={<StartupFormPage />}/>
-          <Route path="/investorpanel/:user_id" element={<InvestorPanel />} />
+          <Route 
+              path="/investorpanel/:user_id" 
+              element={
+                <ProtectedRoute>
+                  <InvestorPanel />
+                </ProtectedRoute>
+              } 
+          />
 
           <Route
               path="/home"

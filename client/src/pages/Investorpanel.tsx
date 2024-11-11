@@ -28,7 +28,7 @@ const InvestorPanel: React.FC = () => {
     const fetchInvestmentRequests = async () => {
         setLoading(true); // Set loading state
         try {
-            const response = await axios.get(`http://localhost:3001/api/investor_requests/${user_id}`);
+            const response = await axios.get(`http://localhost:3001/api/investorpanel_requests/${user_id}`);
             const pendingRequests = response.data.investment_requests?.filter((request: InvestmentRequest) => request.status === 'pending') || [];
 
             setInvestmentRequests(pendingRequests);
@@ -79,7 +79,7 @@ const InvestorPanel: React.FC = () => {
             <StickyNavbar />
             <div className="min-h-screen bg-gray-100 p-10">
                 <div className="container mx-auto bg-white rounded-lg shadow-lg p-8">
-                    <h1 className="text-2xl font-bold mb-6 text-gray-800">{localStorage.getItem("user_name")}'s Investment Requests</h1>
+                    <h1 className="text-2xl font-bold mb-6 text-gray-800">My Investment Requests</h1>
                     {loading && <p>Loading...</p>}
                     {error && <p className="text-red-500">{error}</p>}
                     <table className="min-w-full bg-white border-collapse">

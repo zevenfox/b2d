@@ -572,3 +572,59 @@ app.get('/api/investor_requests/:id', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}/`);
 });
+
+app.get('/api/investorpanel_requests/:id', async (req, res) => {
+  const { id } = req.params; // Extract startup_id from the route parameters
+
+  try {
+    // Fetch pending investment deals for the specified startup_id
+    const investmentRequests = await prisma.investmentDeal.findMany({
+      where: {
+        investor_user_id: Number(id), // Ensure id is converted to a number if needed
+      },
+    });
+
+    // If no investment requests are found, return an appropriate response
+    if (investmentRequests.length === 0) {
+      return res.status(404).json({ message: 'No investment requests found for this startup' });
+    }
+
+    // Get the IDs of users from the investment requests
+    const userIds = investmentRequests.map(deal => deal.startup_id);
+
+    // Fetch users corresponding to those IDs
+    const users = await prisma.user.findMany({
+      where: {
+        id: { in: userIds }, // Fetch users whose IDs are in the userIds array
+      },
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+      },
+    });
+
+    // Create a mapping of users by their IDs
+    const userMap = {};
+    users.forEach(user => {
+      userMap[user.id] = user;
+    });
+
+    // Format the response by combining investment requests with user details
+    const formattedRequests = investmentRequests.map(deal => ({
+      id: deal.id,
+      first_name: userMap[deal.startup_id]?.first_name || null,
+      last_name: userMap[deal.startup_id]?.last_name || null,
+      email: userMap[deal.startup_id]?.email || null,
+      investment_amount: deal.investment_amount,
+      reason: deal.reason,
+      status: deal.status,
+    }));
+
+    res.json({ investment_requests: formattedRequests });
+  } catch (err) {
+    console.error('Error fetching investment requests:', err.message);
+    return res.status(500).json({ error: 'Database query failed', details: err.message });
+  }
+});
