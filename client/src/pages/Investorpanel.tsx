@@ -28,7 +28,7 @@ const InvestorPanel: React.FC = () => {
     const fetchInvestmentRequests = async () => {
         setLoading(true); // Set loading state
         try {
-            const response = await axios.get(`http://localhost:3001/api/investment_requests/${user_id}`);
+            const response = await axios.get(`http://localhost:3001/api/investor_requests/${user_id}`);
             const pendingRequests = response.data.investment_requests?.filter((request: InvestmentRequest) => request.status === 'pending') || [];
 
             setInvestmentRequests(pendingRequests);
