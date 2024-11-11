@@ -129,6 +129,7 @@ const StartupPage: React.FC = () => {
     };
 
     const hasPendingRequest = investmentRequests.some((request) => request.status === "pending");
+    const dayLeft = Math.max(0, Math.ceil((new Date(startup.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
 
     return (
         <div className="text-left bg-white">
@@ -157,19 +158,20 @@ const StartupPage: React.FC = () => {
                                 <div className="text-4xl font-bold text-[#C3FF73]">${startup.funding_goal}</div>
                                 <div>{fundingPercentage.toFixed(0)}% raised of ${startup.valuation_cap} goal</div>
                                 <div className="h-2 bg-gray-700 mt-2 rounded-[10px]">
-                                    <div className="h-full bg-[#C3FF73] rounded-[10px]" style={{ width: `${fundingPercentage}%` }}></div>
+                                    <div className="h-full bg-[#C3FF73] rounded-[10px]"
+                                         style={{width: `${fundingPercentage}%`}}></div>
                                 </div>
                             </div>
                             <div className="text-3xl mt-6 font-bold text-[#C3FF73]">
-                                {Math.ceil((new Date(startup.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days
+                                {dayLeft} days
                             </div>
                             <div>Left to invest</div>
                             <button
-                                className={`mt-6 w-full py-2 font-bold rounded ${hasPendingRequest ? 'bg-yellow-500 text-black' : 'bg-[#C3FF73] text-black'}`}
+                                className={`mt-6 w-full py-2 font-bold rounded ${hasPendingRequest ? 'bg-yellow-500 text-black' : dayLeft === 0 ? 'bg-red-500 text-white' : 'bg-[#C3FF73] text-black'}`}
                                 onClick={() => !hasPendingRequest && setIsInvestPopupOpen(true)}  // Open popup only if no pending request
-                                disabled={hasPendingRequest}  // Disable button if pending request exists
+                                disabled={hasPendingRequest || dayLeft === 0}  // Disable button if pending request exists
                             >
-                                {hasPendingRequest ? "Pending" : `Invest in ${startup.company_name}`}
+                                {hasPendingRequest ? "Pending" : dayLeft === 0 ? "Investment Closed" : `Invest in ${startup.company_name}`}
                             </button>
                             <div className="mt-4 text-center">${startup.min_investment} minimum investment</div>
                         </div>
