@@ -531,9 +531,30 @@ app.put('/api/investment_requests/:id', async (req, res) => {
   const { status } = req.body; // Get the new status from the request body
 
   try {
+    // Retrieve the investment request by ID
+    const investmentRequest = await prisma.investmentDeal.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!investmentRequest) {
+      return res.status(404).json({ error: 'Investment request not found' });
+    }
+
+    // Only update the funding_goal if the status is approved
+    if (status === 'accepted') {
+      await prisma.startUp.update({
+        where: { id: investmentRequest.startup_id }, // Use startup_id from InvestmentDeal
+        data: {
+          funding_goal: {
+            increment: investmentRequest.investment_amount, // Add the investment amount to funding_goal
+          },
+        },
+      });
+    }
+
     // Update the investment request status
     const updatedRequest = await prisma.investmentDeal.update({
-      where: { id: Number(id) }, // Ensure id is converted to a number
+      where: { id: Number(id) },
       data: { status }, // Set the new status
     });
 
@@ -543,6 +564,7 @@ app.put('/api/investment_requests/:id', async (req, res) => {
     return res.status(500).json({ error: 'Database update failed', details: err.message });
   }
 });
+
 
 app.get('/api/investor_requests/:id', async (req, res) => {
   const { id } = req.params; // Extract the investment deal ID from the route parameters
