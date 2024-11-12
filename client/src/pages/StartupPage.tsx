@@ -133,11 +133,11 @@ const StartupPage: React.FC = () => {
 
     return (
         <div className="text-left bg-white">
-            <StickyNavbar />
+            <StickyNavbar/>
             <header className="mx-auto px-56 py-16 text-left">
                 <div className="flex items-start">
                     <div className="flex-shrink-0">
-                        <img src={startup.company_logo} alt="Logo" className="size-16" onError={defaultImage} />
+                        <img src={startup.company_logo} alt="Logo" className="size-16" onError={defaultImage}/>
                     </div>
                     <div className="flex-grow ml-8">
                         <h1 className="text-6xl font-bold">{startup.company_name}</h1>
@@ -148,9 +148,11 @@ const StartupPage: React.FC = () => {
             <div className="mx-auto px-56 text-left">
                 <div className="flex items-start">
                     <div className="flex-grow">
-                        <img src={startup.opportunity_image} alt="Highlight" className="w-full" onError={defaultImage}/>
+                        <img src={startup.opportunity_image} alt="Highlight"
+                             className="w-full h-auto object-cover max-w-full max-h-[500px]" onError={defaultImage}/>
                     </div>
-                    <div className="flex-none ml-16">
+                    <div className="flex flex-col ml-16 space-y-8">
+                        {/* First Box */}
                         <div className="bg-black text-white p-6 rounded-md w-72">
                             <div className="text-3xl font-bold text-[#C3FF73]">{startup.valuation_cap}</div>
                             <div>Valuation Cap</div>
@@ -175,20 +177,9 @@ const StartupPage: React.FC = () => {
                             </button>
                             <div className="mt-4 text-center">${startup.min_investment} minimum investment</div>
                         </div>
-                    </div>
-                </div>
-                <div className="flex items-start">
-                    <div className="flex-grow">
-                        <h1 className="text-3xl font-bold pt-24">Highlights</h1>
-                        <p className="mt-4 text-black text-xl">
-                            {startup.company_background}
-                        </p>
-                        <div className="pt-32">
-                        <div className="h-px flex-auto bg-gray-300"></div>
-                        </div>
-                    </div>
-                    <div className="flex-none ml-16">
-                        <div className="bg-black text-lime-400 p-6 rounded-md w-72 mt-8">
+
+                        {/* Second Box */}
+                        <div className="bg-black text-lime-400 p-6 rounded-md w-72">
                             <div className="mb-6">
                                 <div className="text-xl font-bold text-[#C3FF73]">Valuation cap</div>
                                 <div className="text-white">${startup.valuation_cap}</div>
@@ -201,7 +192,8 @@ const StartupPage: React.FC = () => {
                             <div className="h-px bg-gray-500"></div>
                             <div className="my-6">
                                 <div className="text-xl font-bold text-[#C3FF73]">Min & Max investment</div>
-                                <div className="text-white">${startup.min_investment} to ${startup.max_investment}</div>
+                                <div className="text-white">${startup.min_investment} to
+                                    ${startup.max_investment}</div>
                             </div>
                             <div className="h-px bg-gray-500"></div>
                             <div className="mt-6">
@@ -211,13 +203,26 @@ const StartupPage: React.FC = () => {
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="mx-auto px-56 text-left">
-                <h1 className="text-3xl font-bold pt-16">Opportunity</h1>
-                <div className="size-4/5">
-                    <p className="mt-4 text-black text-xl">{startup.opportunity}</p>
-                    <div className="pt-16">
-                        <div className="h-px flex-auto bg-gray-300"></div>
+                <div className="flex items-start">
+                    <div className="flex-grow">
+                        <h1 className="text-3xl font-bold pt-24">Highlights</h1>
+                        <p className="mt-4 text-black text-xl">
+                            {startup.company_background}
+                        </p>
+                        <div className="pt-16">
+                            <div className="h-px flex-auto bg-gray-300"></div>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex items-start">
+                    <div className="flex-grow">
+                        <h1 className="text-3xl font-bold pt-24">Opportunity</h1>
+                        <p className="mt-4 text-black text-xl">
+                            {startup.opportunity}
+                        </p>
+                        <div className="pt-16">
+                            <div className="h-px flex-auto bg-gray-300"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -231,7 +236,8 @@ const StartupPage: React.FC = () => {
             </div>
             <div className="mx-auto px-56 text-left">
                 <h1 className="text-3xl font-bold pt-16">Business Model</h1>
-                <img src={startup.business_model_image} alt="Business Model" className="size-4/5 pt-16" onError={defaultImage}/>
+                <img src={startup.business_model_image} alt="Business Model" className="size-4/5 pt-16"
+                     onError={defaultImage}/>
                 <p className="mt-4 text-black text-xl pt-16">{startup.business_model}</p>
                 <div className="pt-16">
                     <div className="h-px flex-auto bg-gray-300"></div>
@@ -248,7 +254,7 @@ const StartupPage: React.FC = () => {
                     maxInvestment={startup.max_investment}
                 />
             )}
-            <StickyFooter />
+            <StickyFooter/>
         </div>
     );
 };

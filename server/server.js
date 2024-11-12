@@ -233,31 +233,102 @@ app.get("/api/startups/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const startup = await prisma.startUp.findUnique({ where: { id: parseInt(id) } });
+
     if (startup) {
-      res.json(startup);
+      // Initialize variables for all image fields
+      let companyLogoUrl = '';
+      let opportunityImageUrl = '';
+      let productImageUrl = '';
+      let businessModelImageUrl = '';
+
+      // Function to generate signed URLs for S3
+      const generateSignedUrl = async (imageKey) => {
+        if (imageKey) {
+          try {
+            const params = {
+              Bucket: s3Bucket,
+              Key: imageKey, // S3 key for the image
+            };
+            const command = new GetObjectCommand(params);
+            return await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+          } catch (error) {
+            console.error(`Error generating signed URL for image: ${imageKey}`, error);
+            return ''; // Return an empty string if there was an error
+          }
+        }
+        return ''; // Return an empty string if no image key is provided
+      };
+
+      // Generate signed URLs for all image fields
+      companyLogoUrl = await generateSignedUrl(startup.company_logo);
+      opportunityImageUrl = await generateSignedUrl(startup.opportunity_image);
+      productImageUrl = await generateSignedUrl(startup.product_image);
+      businessModelImageUrl = await generateSignedUrl(startup.business_model_image);
+
+      // Return the startup with all the signed URLs
+      res.json({
+        ...startup,
+        company_logo: companyLogoUrl, // Signed URL for company_logo
+        opportunity_image: opportunityImageUrl, // Signed URL for opportunity_image
+        product_image: productImageUrl, // Signed URL for product_image
+        business_model_image: businessModelImageUrl, // Signed URL for business_model_image
+      });
     } else {
       res.status(404).json({ error: "Startup not found." });
     }
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "An error occurred while fetching the startup." });
   }
 });
 
+
 // Fetch all startups
 app.get("/api/allstartups", async (req, res) => {
   try {
-
     const startups = await prisma.startUp.findMany();
 
-    const mappedStartups = startups.map(startup => {
+    const mappedStartups = await Promise.all(startups.map(async (startup) => {
       const raised = (startup.investments || []).reduce((sum, investment) => sum + investment.investment_amount, 0);
       const percentRaised = startup.funding_goal ? (raised / startup.funding_goal) * 100 : 0;
+
+      // Generate signed URLs for company_logo and company_background if they exist
+      let companyLogoUrl = '';
+      let companyBackgroundUrl = '';
+
+      // Generate signed URL for company_logo
+      if (startup.company_logo) {
+        try {
+          const logoParams = {
+            Bucket: s3Bucket,
+            Key: startup.company_logo, // S3 key for company_logo
+          };
+          const logoCommand = new GetObjectCommand(logoParams);
+          companyLogoUrl = await getSignedUrl(s3Client, logoCommand, { expiresIn: 3600 });
+        } catch (error) {
+          console.error(`Error generating signed URL for logo of startup ID: ${startup.id}`, error);
+        }
+      }
+
+      // Generate signed URL for company_background
+      if (startup.company_background) {
+        try {
+          const backgroundParams = {
+            Bucket: s3Bucket,
+            Key: startup.company_background, // S3 key for company_background
+          };
+          const backgroundCommand = new GetObjectCommand(backgroundParams);
+          companyBackgroundUrl = await getSignedUrl(s3Client, backgroundCommand, { expiresIn: 3600 });
+        } catch (error) {
+          console.error(`Error generating signed URL for background of startup ID: ${startup.id}`, error);
+        }
+      }
 
       return {
         id: startup.id,
         company_name: startup.company_name,
-        company_logo: startup.company_logo,
-        company_background: startup.company_background,
+        company_logo: companyLogoUrl, // Signed URL for company_logo
+        company_background: companyBackgroundUrl, // Signed URL for company_background
         company_description: startup.company_description,
         category: startup.company_business_type,
         funding_goal: startup.funding_goal,
@@ -266,13 +337,15 @@ app.get("/api/allstartups", async (req, res) => {
         date: startup.deadline,
         description: startup.opportunity,
       };
-    });
+    }));
+
     res.json(mappedStartups);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error fetching startups" });
   }
 });
+
 
 // Fetch featured deals with a default limit of 8
 app.get("/api/featured-deals", async (req, res) => {
@@ -357,15 +430,46 @@ app.get("/api/business-type", async (req, res) => {
       where: type ? { company_business_type: type } : {},
     });
 
-    const mappedStartups = startups.map(startup => {
+    const mappedStartups = await Promise.all(startups.map(async (startup) => {
       const raised = (startup.investments || []).reduce((sum, investment) => sum + investment.investment_amount, 0);
       const percentRaised = startup.funding_goal ? (raised / startup.funding_goal) * 100 : 0;
+
+      let companyLogoUrl = '';
+      let companyBackgroundUrl = '';
+
+      // Generate signed URL for company_logo
+      if (startup.company_logo) {
+        try {
+          const logoParams = {
+            Bucket: s3Bucket,
+            Key: startup.company_logo, // S3 key for company_logo
+          };
+          const logoCommand = new GetObjectCommand(logoParams);
+          companyLogoUrl = await getSignedUrl(s3Client, logoCommand, { expiresIn: 3600 }); // URL expires in 1 hour
+        } catch (error) {
+          console.error(`Error generating signed URL for logo of startup ID: ${startup.id}`, error);
+        }
+      }
+
+      // Generate signed URL for company_background
+      if (startup.company_background) {
+        try {
+          const backgroundParams = {
+            Bucket: s3Bucket,
+            Key: startup.company_background, // S3 key for company_background
+          };
+          const backgroundCommand = new GetObjectCommand(backgroundParams);
+          companyBackgroundUrl = await getSignedUrl(s3Client, backgroundCommand, { expiresIn: 3600 }); // URL expires in 1 hour
+        } catch (error) {
+          console.error(`Error generating signed URL for background of startup ID: ${startup.id}`, error);
+        }
+      }
 
       return {
         id: startup.id,
         company_name: startup.company_name,
-        company_logo: startup.company_logo,
-        company_background: startup.company_background,
+        company_logo: companyLogoUrl, // Return the signed URL
+        company_background: companyBackgroundUrl, // Return the signed URL
         company_description: startup.company_description,
         category: startup.company_business_type,
         funding_goal: startup.funding_goal,
@@ -374,7 +478,7 @@ app.get("/api/business-type", async (req, res) => {
         date: startup.deadline,
         description: startup.opportunity,
       };
-    });
+    }));
 
     res.json(mappedStartups);
   } catch (error) {
