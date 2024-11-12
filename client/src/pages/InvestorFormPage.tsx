@@ -95,7 +95,30 @@ const InvestorSignUp: React.FC = () => {
             }
 
             toast.success('Sign up successful!');
-            navigate('/home');
+            const loginResponse = await fetch('http://localhost:3001/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: formData.username,
+                    password: formData.password,
+                }),
+            });
+
+            const data = await loginResponse.json();
+
+            if (loginResponse.ok) {
+                toast.success('Login successful!');
+                localStorage.setItem('token', data.token); // Save the token for authentication
+                localStorage.setItem('role', data.role); // Save the user's role
+                localStorage.setItem('user_name', data.username);
+                localStorage.setItem('id', data.id);
+                navigate('/home');
+            }
+            else {
+                toast.error(data.error || 'Login failed');
+            }
         } catch (error) {
             console.error('Error during sign up:', error);
             toast.error(error instanceof Error ? error.message : 'Sign up failed. Please try again.');
