@@ -29,9 +29,12 @@ const InvestorPanel: React.FC = () => {
         setLoading(true); // Set loading state
         try {
             const response = await axios.get(`http://localhost:3001/api/investorpanel_requests/${user_id}`);
-            const pendingRequests = response.data.investment_requests?.filter((request: InvestmentRequest) => request.status === 'pending') || [];
+            const sortedRequests = response.data.investment_requests
+                ?.filter((request: InvestmentRequest) => ['pending', 'accepted', 'declined'].includes(request.status))
+                .sort((a: InvestmentRequest, b: InvestmentRequest) => b.id - a.id) // Sort by ID (newest first)
+                .slice(0, 20) || []; // Limit to 20 newest requests
 
-            setInvestmentRequests(pendingRequests);
+            setInvestmentRequests(sortedRequests);
         } catch (err) {
             if (axios.isAxiosError(err)) {
                 setError(err.response?.data?.error || 'Failed to fetch investment requests');
@@ -46,12 +49,6 @@ const InvestorPanel: React.FC = () => {
     useEffect(() => {
         if (user_id) fetchInvestmentRequests();
     }, [user_id]);
-
-    const handleOpenModal = (id: number, type: 'accepted' | 'declined') => {
-        setSelectedRequestId(id);
-        setActionType(type);
-        setIsModalOpen(true);
-    };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
@@ -72,7 +69,19 @@ const InvestorPanel: React.FC = () => {
             }
         }
     };
-    const hasPendingRequest = investmentRequests.some((request) => request.status === "pending");
+
+    const getStatusLabel = (status: 'pending' | 'accepted' | 'declined') => {
+        switch (status) {
+            case 'pending':
+                return 'Pending';
+            case 'accepted':
+                return 'Approved';
+            case 'declined':
+                return 'Declined';
+            default:
+                return '';
+        }
+    };
 
     return (
         <div>
@@ -117,13 +126,12 @@ const InvestorPanel: React.FC = () => {
                                         </td>
                                         <td className="py-3 px-6 text-center">
                                             <div className="flex justify-center space-x-2">
-                                                <button
-                                                    className={`mt-6 w-full py-2 font-bold rounded ${hasPendingRequest ? 'bg-yellow-500 text-black' : 'bg-[#C3FF73] text-black'}`}
-                                                    // onClick={() => !hasPendingRequest && setIsInvestPopupOpen(true)}  // Open popup only if no pending request
-                                                    disabled={hasPendingRequest}  // Disable button if pending request exists
-                                                >
-                                                    {hasPendingRequest ? "Pending" : "Invest"}
-                                                </button>
+                                                <span className={`font-semibold ${
+                                                    item.status === 'accepted' ? 'text-green-500' :
+                                                        item.status === 'declined' ? 'text-red-500' : 'text-yellow-500'
+                                                }`}>
+                                                {getStatusLabel(item.status)}
+                                            </span>
                                             </div>
                                         </td>
                                     </tr>
