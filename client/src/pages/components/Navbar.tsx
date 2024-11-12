@@ -5,12 +5,15 @@ const Navbar: React.FC = () => {
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUsername] = useState<string | null>(null);
+    const [role, setRole] = useState<string | null>(null);
 
     useEffect(() => {
         const storedUsername = localStorage.getItem('user_name');
+        const storedRole = localStorage.getItem('role');
         if (storedUsername) {
             setUsername(storedUsername);
             setIsLoggedIn(true);
+            setRole(storedRole);
         }
     }, []);
 
@@ -25,6 +28,7 @@ const Navbar: React.FC = () => {
         localStorage.removeItem('id');
         setUsername(null);
         setIsLoggedIn(false);
+        setRole(null);
         navigate('/index');
     };
 
@@ -37,6 +41,14 @@ const Navbar: React.FC = () => {
             <div className="flex space-x-6 text-white">
                 {isLoggedIn ? (
                     <>
+                        {role === 'investor' && (
+                            <button
+                                onClick={() => navigate(`/investorpanel/${localStorage.getItem('id')}`)}
+                                className="hover:text-[#A8FF35]"
+                            >
+                                My Investment
+                            </button>
+                        )}
                         <span className="text-[#A8FF35]">Welcome, {username}</span>
                         <button onClick={handleLogout} className="hover:text-[red]">Sign Out</button>
                     </>
