@@ -40,10 +40,10 @@
 //     </div>
 //   );
 // }
-
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 type SearchProps = {
   placeholder: string;
@@ -57,14 +57,13 @@ type StartupOption = {
 
 export default function Search({ placeholder, onSearch }: SearchProps) {
   const [startupOptions, setStartupOptions] = useState<StartupOption[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch startup names from the backend using axios
     const fetchStartups = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/startups');
+        const response = await axios.get('http://localhost:3001/api/allstartups');
         const data = response.data;
-        // Map the response data to options format for react-select
         const options = data.map((startup: { id: number; company_name: string }) => ({
           value: startup.id,
           label: startup.company_name,
@@ -80,8 +79,7 @@ export default function Search({ placeholder, onSearch }: SearchProps) {
 
   const handleSelectChange = (selectedOption: StartupOption | null) => {
     if (selectedOption) {
-      console.log(`Selected startup ID: ${selectedOption.value}`);
-      onSearch(selectedOption.label); // TODO: handle redirection or other actions here
+      navigate(`/startups/${selectedOption.value}`);
     }
   };
 
@@ -98,9 +96,17 @@ export default function Search({ placeholder, onSearch }: SearchProps) {
             backgroundColor: 'transparent',
             borderColor: state.isFocused ? 'white' : 'gray',
           }),
+          input: (baseStyles) => ({
+            ...baseStyles,
+            color: 'white', // Make the input text color white
+          }),
           singleValue: (baseStyles) => ({
             ...baseStyles,
             color: 'white',
+          }),
+          placeholder: (baseStyles) => ({
+            ...baseStyles,
+            color: 'white', // Make the placeholder text color white
           }),
           option: (baseStyles, state) => ({
             ...baseStyles,
