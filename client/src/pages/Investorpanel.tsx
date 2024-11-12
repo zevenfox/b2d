@@ -85,8 +85,8 @@ const InvestorPanel: React.FC = () => {
                     <table className="min-w-full bg-white border-collapse">
                         <thead>
                             <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                                <th className="py-3 px-6 text-left">Investor Name</th>
-                                <th className="py-3 px-6 text-left">Email</th>
+                                <th className="py-3 px-6 text-left">Startup Name</th>
+                                <th className="py-3 px-6 text-left">Payment Contact</th>
                                 <th className="py-3 px-6 text-left">Investment Amount</th>
                                 <th className="py-3 px-6 text-left">Reason</th>
                                 <th className="py-3 px-6 text-center">Status</th>
@@ -100,7 +100,14 @@ const InvestorPanel: React.FC = () => {
                                             <span className="font-medium">{item.first_name} {item.last_name}</span>
                                         </td>
                                         <td className="py-3 px-6 text-left">
-                                            <span>{item.email}</span>
+                                            <a
+                                                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${item.email}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-blue-500 hover:underline"
+                                            >
+                                                {item.email}
+                                            </a>
                                         </td>
                                         <td className="py-3 px-6 text-left">
                                             <span>${item.investment_amount}</span>
