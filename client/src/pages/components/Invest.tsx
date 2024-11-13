@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 import axios from "axios";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 interface InvestProps {
     onClose: () => void;
@@ -19,6 +19,7 @@ const Invest: React.FC<InvestProps> = ({ onClose, minInvestment, maxInvestment }
     const { id: startupId } = useParams<{ id: string }>();
     const [investmentAmount, setInvestmentAmount] = useState<string>("");
     const [reason, setReason] = useState<string>("");
+    const [agreeToTerms, setAgreeToTerms] = useState(false);
     const [error, setError] = useState<string>("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -51,6 +52,11 @@ const Invest: React.FC<InvestProps> = ({ onClose, minInvestment, maxInvestment }
 
         if (!reason.trim()) {
             setError("Please provide a reason for your investment");
+            return;
+        }
+
+        if (!agreeToTerms) {
+            setError("You must agree to the investment terms before proceeding.");
             return;
         }
 
@@ -151,9 +157,31 @@ const Invest: React.FC<InvestProps> = ({ onClose, minInvestment, maxInvestment }
                         />
                     </div>
 
+                    <div className="mb-4 flex items-center">
+                        <input
+                            type="checkbox"
+                            id="agreeToTerms"
+                            checked={agreeToTerms}
+                            onChange={(e) => setAgreeToTerms(e.target.checked)}
+                            className="mr-2"
+                            disabled={isSubmitting}
+                        />
+                        <label htmlFor="agreeToTerms" className="text-sm text-gray-700">
+                            I agree to the{" "}
+                            <a
+                                href="/investment-agreement"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:underline"
+                            >
+                                Investment Agreement
+                            </a>
+                        </label>
+                    </div>
+
                     <button
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || !agreeToTerms}
                         className='w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:bg-blue-300'>
                         {isSubmitting ? 'Processing...' : 'Invest'}
                     </button>

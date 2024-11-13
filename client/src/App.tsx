@@ -20,6 +20,7 @@ import IndexPage from './pages/IndexPage';
 import InvestorSignUp from './pages/InvestorFormPage';
 import ProtectedRoute from "./pages/components/ProtectedRoute";
 import InvestorPanel from './pages/Investorpanel';
+import InvestmentAgreement from './pages/investmentagreement';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/index" element={<IndexPage />} />
           <Route path="/investorform" element={<InvestorSignUp />}/>
           <Route path="/startupform" element={<StartupFormPage />}/>
+          <Route path="/investment-agreement" element={<InvestmentAgreement />} />
           <Route 
               path="/investorpanel/:user_id" 
               element={
