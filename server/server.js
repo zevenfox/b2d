@@ -737,9 +737,30 @@ app.get('/api/investorpanel_requests/:id', async (req, res) => {
       userMap[user.id] = user;
     });
 
+    const companies = await prisma.startUp.findMany({
+      where: {
+        id: { in: userIds }, // Fetch users whose IDs are in the userIds array
+      },
+      select: {
+        id: true,
+        user_id: true,
+        company_name: true,
+      },
+    });
+
+    const startupMap = {};
+    companies.forEach(startup => {
+      startupMap[startup.id] = {
+        user_id: startup.user_id,
+        company_name: startup.company_name,
+      };
+    });
+
     // Format the response by combining investment requests with user details
     const formattedRequests = investmentRequests.map(deal => ({
       id: deal.id,
+      startup_id: startupMap[deal.startup_id]?.user_id || null,
+      company_name: startupMap[deal.startup_id]?.company_name || null,
       first_name: userMap[deal.startup_id]?.first_name || null,
       last_name: userMap[deal.startup_id]?.last_name || null,
       email: userMap[deal.startup_id]?.email || null,
