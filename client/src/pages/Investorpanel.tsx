@@ -185,48 +185,56 @@ const InvestorPanel: React.FC = () => {
                             ) : (
                                 <div></div>
                             )}
-                            <div className="overflow-y-auto h-64">
+                            <div>
                                 {combinedInvestments.length > 0 ? (
                                     <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow">
                                         <thead className="bg-gray-200 text-gray-600 uppercase text-sm">
                                         <tr>
-                                            <th className="py-3 px-4 text-left">Company</th>
-                                            <th className="py-3 px-4 text-left">Total Investment</th>
-                                            <th className="py-3 px-4 text-left">Percentage</th>
+                                            <th className="py-3 px-4 text-center">Company</th>
+                                            <th className="py-3 px-4 text-center">Total Investment</th>
+                                            <th className="py-3 px-4 text-center">Percentage</th>
                                         </tr>
                                         </thead>
-                                        <tbody className="text-gray-700 text-sm font-light">
-                                        {combinedInvestments.map((investment, index) => {
-                                            const percentage = ((investment.investment_amount / totalCombinedAmount) * 100).toFixed(2);
-                                            return (
-                                                <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
-                                                    <td className="py-3 px-4 text-left whitespace-nowrap">
-                                                        <div className="flex items-center">
-                                                            <span
-                                                                className="inline-block w-3 h-3 mr-2 rounded-full"
-                                                                style={{
-                                                                    backgroundColor: `hsl(${index * 360 / combinedInvestments.length}, 70%, 50%)`
-                                                                }}
-                                                            ></span>
-                                                            <span>{investment.company_name}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="py-3 px-4 text-left">
-                                                        <span className="text-blue-500 font-semibold">
-                                                            ${investment.investment_amount}
-                                                        </span>
-                                                    </td>
-                                                    <td className="py-3 px-4 text-left text-green-500 font-semibold">
-                                                        <span>{percentage}%</span>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-                                        </tbody>
                                     </table>
                                 ) : (
-                                    <div></div>
+                                    <div className="text-center text-gray-500">No investments yet.</div>
                                 )}
+                                <div className="overflow-y-auto h-64">
+                                    {combinedInvestments.length > 0 ? (
+                                        <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow">
+                                            <tbody className="text-gray-700 text-sm font-light">
+                                            {combinedInvestments.map((investment, index) => {
+                                                const percentage = ((investment.investment_amount / totalCombinedAmount) * 100).toFixed(2);
+                                                return (
+                                                    <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
+                                                        <td className="py-3 px-4 text-left whitespace-nowrap">
+                                                            <div className="flex items-center">
+                                                                <span
+                                                                    className="inline-block w-3 h-3 mr-2 rounded-full"
+                                                                    style={{
+                                                                        backgroundColor: `hsl(${index * 360 / combinedInvestments.length}, 70%, 50%)`
+                                                                    }}
+                                                                ></span>
+                                                                <span>{investment.company_name}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="py-3 px-4 pr-20 text-left">
+                                                            <span className="text-blue-500 font-semibold">
+                                                                ${investment.investment_amount}
+                                                            </span>
+                                                        </td>
+                                                        <td className="py-3 px-4 text-left text-green-500 font-semibold">
+                                                            <span>{percentage}%</span>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                            </tbody>
+                                        </table>
+                                    ) : (
+                                        <div></div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
