@@ -110,7 +110,7 @@ const InvestorPanel: React.FC = () => {
                     label: (context: any) => {
                         const companyName = context.label;
                         const percent = context.raw.toFixed(2); // Percent representation of investment
-                        return `${percent}% invested in ${companyName}`;
+                        return `${percent}% of your total investment invested in ${companyName}`;
                     },
                 },
                 backgroundColor: 'rgba(0, 0, 0, 0.7)',  // Darker background for better contrast
