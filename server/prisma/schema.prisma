@@ -9,15 +9,19 @@ datasource db {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  username    String    @unique
-  password    String
-  first_name  String    @db.VarChar(100)
-  last_name   String    @db.VarChar(100)
-  email       String    @db.VarChar(255)
-  role        Role
-  startups    StartUp[] // Relation to StartUp model
-  investments InvestmentDeal[] // Relation to InvestmentDeal model
+  id              Int       @id @default(autoincrement())
+  username        String    @unique
+  password        String
+  first_name      String    @db.VarChar(100)
+  last_name       String    @db.VarChar(100)
+  email           String    @db.VarChar(255)
+  role            Role
+  resetToken      String?   @db.VarChar(500)
+  resetTokenExpiry DateTime?
+  startups        StartUp[]
+  investments     InvestmentDeal[]
+
+  @@map("users")
 }
 
 model StartUp {

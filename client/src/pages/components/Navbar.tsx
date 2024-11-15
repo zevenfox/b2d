@@ -33,24 +33,25 @@ const Navbar: React.FC = () => {
     };
 
     return (
-        <nav className="w-full h-16 bg-[#0C1A2A] flex justify-between items-center px-8 md:px-16">
-            <div className="text-[#A8FF35] text-xl font-bold cursor-pointer" onClick={handleLogoClick}>
-                B2D <span className="text-white">venture</span>
+        <nav className="w-full h-[75px]  flex justify-between items-center px-8 md:px-16">
+            <div className="text-[#BED754] text-xl font-bold cursor-pointer" onClick={handleLogoClick}>
+                B2D <span className="text-black">venture</span>
             </div>
-
-            <div className="flex space-x-6 text-white">
+            {/* text-[#BED754] */}
+            <div className="flex gap-[10px] text-black items-center">
                 {isLoggedIn ? (
                     <>
+                        <p className="mr-[10px]">Welcome, {username}</p>
                         {role === 'investor' && (
                             <button
                                 onClick={() => navigate(`/investorpanel/${localStorage.getItem('id')}`)}
-                                className="hover:text-[#A8FF35]"
+                                className="bg-black px-[15px] py-[5px] rounded-full text-white transition-transform transform hover:bg-[#A8FF35] hover:text-black hover:scale-105 hover:shadow-xl hover:z-20 hover:text-black"
                             >
                                 My Investment
                             </button>
                         )}
-                        <span className="text-[#A8FF35]">Welcome, {username}</span>
-                        <button onClick={handleLogout} className="hover:text-[red]">Sign Out</button>
+                        {/* <span className="text-[#BED754] border border-[#BED754] px-[10px] py-[5px] rounded-full">Welcome, {username}</span> */}
+                        <button onClick={handleLogout} className="hover:bg-red-600 hover:text-white hover:border-red-600 border border-black px-[15px] py-[5px] rounded-full">Sign Out</button>
                     </>
                 ) : (
                     <>

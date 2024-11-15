@@ -90,6 +90,7 @@
   transition: fill 1s linear; /* Smooth color transition */
 }
 
+
 .chart-legend-container {
   max-height: 100px; /* Adjust height as necessary */
   overflow-y: auto;  /* Allow scrolling */
@@ -115,4 +116,8 @@
 
 .max-h-600px {
   max-height: 600px;
+
+.css-xc836r-control {
+  border-radius: 8px !important;
+
 }

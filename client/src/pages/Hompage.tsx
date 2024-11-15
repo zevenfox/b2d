@@ -70,17 +70,18 @@ function Homepage() {
   };
 
   return (
-    <div className="text-white">
+    <div className="text-black">
       <StickyNavbar />
-      <div className="container mx-auto px-4 py-16 text-center">
-        <h1 className="text-[72px] font-bold mb-4 bg-gradient-to-r from-[#8CB1FF] from-20% via-[#93FFFF] from-30% via-61% to-[#FFD6AD] to-74% inline-block text-transparent bg-clip-text">
-          Unlock Success
-        </h1>
-        <h2 className="text-[58px]">with the Right Business Partner</h2>
-        <div className="max-w-2xl mx-auto my-[54px]">
+      <div className=" mx-auto py-16 text-center">
+        <p className="text-[86px] font-bold text-[#BED754] leading-[65px]">
+          Unlock Success<br />
+          <span className='text-[42px] text-black'>with the Right Business Partner</span>
+        </p>
+        {/* <h2 className="text-[58px] font-bold">with the Right Business Partner</h2> */}
+        <div className="max-w-2xl mx-auto my-[50px]">
           <Search placeholder="Search for startups..." onSearch={handleSearch} />
         </div>
-        <p className="mb-[54px] max-w-2xl mx-auto text-[22px]">
+        <p className="mb-[60px] mx-auto">
           Countless startups are ready for the right partner to help them soar.
           Don't miss your chance to invest in the next big success!
         </p>

@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 // Import the AWS SDK and required classes using 'import' syntax
 import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
@@ -21,6 +23,7 @@ const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 // Import the auth helper functions
 import { hashPassword, comparePassword, generateToken, authenticateToken } from './auth.js';
+import nodemailer from 'nodemailer';
 
 // Import dotenv to load environment variables
 import dotenv from 'dotenv';
@@ -224,6 +227,127 @@ app.post('/api/login', async (req, res) => {
   } catch (error) {
     console.error('Error during login:', error);
     res.status(500).json({ error: 'Error logging in.' });
+  }
+});
+
+app.post('/api/forgot-password', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required.' });
+  }
+
+  try {
+    // Check if the user exists in the database
+    const user = await prisma.user.findFirst({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ error: 'User with this email does not exist.' });
+    }
+
+    // Generate a password reset token
+    const resetToken = generateToken(user);
+
+    // Store the reset token and its expiry in the database
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        resetToken,
+        resetTokenExpiry: new Date(Date.now() + 3600000) // 1 hour from now
+      },
+    });
+
+    // Create a transport for sending email
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.ethereal.email',
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: process.env.EMAIL_USER || 'baron.marquardt@ethereal.email',
+        pass: process.env.EMAIL_PASS || 'YVS8HWYAfmetKBm69x'
+      },
+      debug: true // Enable debugging
+    });
+
+    // Construct the reset link
+    const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
+
+    // Configure the email details
+    const mailOptions = {
+      from: process.env.EMAIL_USER || 'baron.marquardt@ethereal.email',
+      to: email,
+      subject: 'Password Reset Request',
+      html: `
+        <h1>Password Reset Request</h1>
+        <p>You requested a password reset. Click the link below to reset your password:</p>
+        <a href="${resetLink}">${resetLink}</a>
+        <p>If you did not request this, please ignore this email.</p>
+        <p>This link will expire in 1 hour.</p>
+      `,
+    };
+
+    // Send the email
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Message sent: %s', info.messageId);
+    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+    res.status(200).json({ 
+      message: 'Password reset email sent successfully.',
+      previewUrl: nodemailer.getTestMessageUrl(info) // For testing purposes
+    });
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
+    res.status(500).json({ error: 'Error sending password reset email. Please try again.' });
+  }
+});
+
+app.post('/api/reset-password', async (req, res) => {
+  const { token, password } = req.body;
+
+  if (!token || !password) {
+      return res.status(400).json({ error: 'Token and password are required.' });
+  }
+
+  try {
+      // Verify the token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+
+      // Find the user with this token and make sure it hasn't expired
+      const user = await prisma.user.findFirst({
+          where: {
+              id: decoded.userId,
+              resetToken: token,
+              resetTokenExpiry: {
+                  gt: new Date()
+              }
+          }
+      });
+
+      if (!user) {
+          return res.status(400).json({ error: 'Invalid or expired reset token.' });
+      }
+
+      // Hash the new password
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Update the user's password and clear the reset token
+      await prisma.user.update({
+          where: { id: user.id },
+          data: {
+              password: hashedPassword,
+              resetToken: null,
+              resetTokenExpiry: null
+          }
+      });
+
+      res.json({ message: 'Password reset successful.' });
+  } catch (error) {
+      console.error('Error resetting password:', error);
+      
+      if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+          return res.status(400).json({ error: 'Invalid or expired reset token.' });
+      }
+      
+      res.status(500).json({ error: 'Error resetting password.' });
   }
 });
 
