@@ -10,7 +10,7 @@ const Footer = () => {
     };
 
     return (
-        <footer className="w-full h-48 bg-[#0C1A2A] flex justify-around items-center px-8 md:px-16">
+        <footer className="w-full h-48 bg-black flex justify-around items-center px-8 md:px-16">
             <div>
                 <h1 className="text-white font-bold text-xl whitespace-nowrap">
                     B2D venture

@@ -90,3 +90,6 @@
   transition: fill 1s linear; /* Smooth color transition */
 }
 
+.css-xc836r-control {
+  border-radius: 8px !important;
+}

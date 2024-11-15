@@ -16,12 +16,12 @@ function FeaturedDeals({ limit }: FeaturedDealsProps) {
 
   return (
     <div>
-      <h1 className="text-[48px] text-white font-bold mb-4">Featured Deals</h1>
-      <p className="text-white text-[18px] mb-12">The deals that we recommend for you</p>
+      <h1 className="text-[48px] font-bold mb-4">Featured Deals</h1>
+      <p className="text-[18px] mb-12">The deals that we recommend for you</p>
       <StartUpCard limit={limit} />
       <button 
         onClick={handleViewAllClick} 
-        className="mt-12 bg-white text-gray-800 font-bold py-2 px-8 rounded-full hover:bg-gray-100 transition"
+        className="mt-12 bg-black px-[15px] py-[10px] rounded-full text-white transition-transform transform hover:bg-[#A8FF35] hover:text-black hover:scale-105 hover:shadow-xl hover:z-20 hover:text-black"
       >
         View All
       </button>
