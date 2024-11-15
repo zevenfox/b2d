@@ -90,6 +90,34 @@
   transition: fill 1s linear; /* Smooth color transition */
 }
 
+
+.chart-legend-container {
+  max-height: 100px; /* Adjust height as necessary */
+  overflow-y: auto;  /* Allow scrolling */
+  padding-top: 10px; /* Space above the list */
+  list-style-type: none; /* Remove default list styling */
+  padding-left: 0;    /* Remove default left padding */
+}
+
+.legend-list {
+  margin: 0;         /* Remove margin */
+  padding: 0;        /* Remove padding */
+}
+
+.legend-item {
+  display: flex; /* Make each legend item flex for alignment */
+  align-items: center; /* Align icon and text properly */
+  margin-bottom: 5px; /* Space between legend items */
+}
+
+.legend-item span {
+  margin-right: 5px; /* Space between color box and label */
+}
+
+.max-h-600px {
+  max-height: 600px;
+
 .css-xc836r-control {
   border-radius: 8px !important;
+
 }
