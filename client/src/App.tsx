@@ -20,6 +20,7 @@ import IndexPage from './pages/IndexPage';
 import InvestorSignUp from './pages/InvestorFormPage';
 import ProtectedRoute from "./pages/components/ProtectedRoute";
 import InvestorPanel from './pages/Investorpanel';
+import InvestmentAgreement from './pages/investmentagreement';
 import ForgetPassword from './pages/ForgetPassword';
 import ResetPassword from './pages/components/ResetPassword';
 
@@ -31,6 +32,7 @@ function App() {
           <Route path="/index" element={<IndexPage />} />
           <Route path="/investorform" element={<InvestorSignUp />}/>
           <Route path="/startupform" element={<StartupFormPage />}/>
+          <Route path="/investment-agreement" element={<InvestmentAgreement />} />
           <Route path="/forgot-password" element={<ForgetPassword />}/>
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route 
