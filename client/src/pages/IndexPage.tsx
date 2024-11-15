@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -10,14 +10,34 @@ interface LoginData {
 const Index: React.FC = () => {
     const navigate = useNavigate();
     const [loginData, setLoginData] = useState<LoginData>({ username: '', password: '' });
+    const [rememberMe, setRememberMe] = useState<boolean>(false);
+
+    // Load remembered username on component mount
+    useEffect(() => {
+        const storedUsername = localStorage.getItem('rememberedUsername');
+        if (storedUsername) {
+            setLoginData(prev => ({ ...prev, username: storedUsername }));
+            setRememberMe(true);
+        }
+    }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setLoginData(prevState => ({ ...prevState, [name]: value }));
     };
 
+    const handleRememberMeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setRememberMe(e.target.checked);
+    };
+
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (rememberMe) {
+            localStorage.setItem('rememberedUsername', loginData.username);
+        } else {
+            localStorage.removeItem('rememberedUsername');
+        }
 
         try {
             const response = await fetch('http://localhost:3001/api/login', {
@@ -32,18 +52,17 @@ const Index: React.FC = () => {
 
             if (response.ok) {
                 toast.success('Login successful!');
-                localStorage.setItem('token', data.token); // Save the token for authentication
-                localStorage.setItem('role', data.role); // Save the user's role
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('role', data.role);
                 localStorage.setItem('user_name', data.username);
                 localStorage.setItem('id', data.id);
-                
-                //TODO: Navigate based on the user role when ready
+
                 if (data.role === 'investor') {
                     navigate('/home');
                 } else if (data.role === 'start_up') {
                     navigate(`/adminpanel/${localStorage.getItem('id')}`);
                 } else {
-                    navigate('/'); // Default navigation if role is not set
+                    navigate('/');
                 }
             } else {
                 toast.error(data.error || 'Login failed');
@@ -52,6 +71,10 @@ const Index: React.FC = () => {
             console.error('Error logging in:', error);
             toast.error('Error logging in');
         }
+    };
+
+    const handleForgotPassword = () => {
+        navigate('/forgot-password'); // Redirect to a forgot password page or open a modal
     };
 
     return (
@@ -87,8 +110,30 @@ const Index: React.FC = () => {
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                     />
                                 </div>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center">
+                                        <input
+                                            id="remember-me"
+                                            name="remember-me"
+                                            type="checkbox"
+                                            checked={rememberMe}
+                                            onChange={handleRememberMeChange}
+                                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                        />
+                                        <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">Remember me</label>
+                                    </div>
+                                    <div className="text-sm">
+                                    <button
+                                        type="button"
+                                        onClick={handleForgotPassword}
+                                        className="font-medium text-indigo-600 hover:text-indigo-500"
+                                    >
+                                        Forgot your password?
+                                    </button>
+                                </div>
+                                </div>
                             </div>
-                            <div className="px-6 py-4 bg-gray-50">
+                            <div className="py-4">
                                 <button
                                     type="submit"
                                     className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

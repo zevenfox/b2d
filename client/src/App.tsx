@@ -20,6 +20,8 @@ import IndexPage from './pages/IndexPage';
 import InvestorSignUp from './pages/InvestorFormPage';
 import ProtectedRoute from "./pages/components/ProtectedRoute";
 import InvestorPanel from './pages/Investorpanel';
+import ForgetPassword from './pages/ForgetPassword';
+import ResetPassword from './pages/components/ResetPassword';
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
           <Route path="/index" element={<IndexPage />} />
           <Route path="/investorform" element={<InvestorSignUp />}/>
           <Route path="/startupform" element={<StartupFormPage />}/>
+          <Route path="/forgot-password" element={<ForgetPassword />}/>
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route 
               path="/investorpanel/:user_id" 
               element={

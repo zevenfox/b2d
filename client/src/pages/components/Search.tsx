@@ -98,20 +98,20 @@ export default function Search({ placeholder, onSearch }: SearchProps) {
           }),
           input: (baseStyles) => ({
             ...baseStyles,
-            color: 'white', // Make the input text color white
+            color: 'black',
           }),
           singleValue: (baseStyles) => ({
             ...baseStyles,
-            color: 'white',
+            color: 'black',
           }),
           placeholder: (baseStyles) => ({
             ...baseStyles,
-            color: 'white', // Make the placeholder text color white
+            color: 'DimGray',
           }),
           option: (baseStyles, state) => ({
             ...baseStyles,
-            backgroundColor: state.isFocused ? '#2684FF' : 'transparent',
-            color: state.isFocused ? 'white' : 'black',
+            backgroundColor: state.isFocused ? 'black' : 'transparent',
+            color: state.isFocused ? 'white' : 'DimGray',
           }),
         }}
       />
