@@ -84,24 +84,24 @@ const StartupPage: React.FC = () => {
             }
         };
 
+        fetchStartup();
+    }, [id]);
+
+    useEffect(() => {
         const fetchInvestmentRequests = async () => {
-            try {
-                if (id) { // Check if `id` is defined
+            if (startup) {
+                try {
                     const response = await axios.get(`http://localhost:3001/api/investor_requests/${localStorage.getItem('id')}`);
-                    const filteredRequests = response.data.filter((request: InvestmentRequest) => request.startup_id === parseInt(id));
+                    const filteredRequests = response.data.filter((request: InvestmentRequest) => request.startup_id === startup.user_id);
                     setInvestmentRequests(filteredRequests);
-                } else {
-                    // Handle the case when `id` is undefined
-                    setError('Startup ID is undefined.');
+                } catch (err: unknown) {
+                    setError('An error occurred while fetching investment requests.');
                 }
-            } catch (err: unknown) {
-                setError('An error occurred while fetching investment requests.');
             }
         };
 
-        fetchStartup();
         fetchInvestmentRequests();
-    }, [id]);
+    }, [startup]);
 
     if (loading) {
         return (
@@ -250,6 +250,7 @@ const StartupPage: React.FC = () => {
             {isInvestPopupOpen && (
                 <Invest
                     onClose={() => setIsInvestPopupOpen(false)}
+                    startup_id={startup.user_id}
                     minInvestment={startup.min_investment}
                     maxInvestment={startup.max_investment}
                 />

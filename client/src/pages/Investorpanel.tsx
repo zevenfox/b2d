@@ -7,6 +7,7 @@ import { Doughnut } from 'react-chartjs-2';
 import { ChartOptions } from 'chart.js';
 
 interface InvestmentRequest {
+    deal_id: number;
     id: number;
     startup_id: number;
     company_name: string;
@@ -35,7 +36,7 @@ const InvestorPanel: React.FC = () => {
             const response = await axios.get(`http://localhost:3001/api/investorpanel_requests/${user_id}`);
             const sortedRequests = response.data.investment_requests
                 ?.filter((request: InvestmentRequest) => ['pending', 'accepted', 'declined'].includes(request.status))
-                .sort((a: InvestmentRequest, b: InvestmentRequest) => b.id - a.id) // Sort by ID (newest first)
+                .sort((a: InvestmentRequest, b: InvestmentRequest) => b.deal_id - a.deal_id) // Sort by ID (newest first)
 
             setInvestmentRequests(sortedRequests);
         } catch (err) {
@@ -256,7 +257,7 @@ const InvestorPanel: React.FC = () => {
                                         <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
                                             <td className="py-3 px-6 text-left whitespace-nowrap">
                                                 <a
-                                                    href={`/startups/${item.startup_id}`}
+                                                    href={`/startups/${item.id}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="text-blue-500 hover:underline"
@@ -333,7 +334,7 @@ const InvestorPanel: React.FC = () => {
                                         <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
                                             <td className="py-3 px-6 text-left whitespace-nowrap">
                                                 <a
-                                                    href={`/startups/${item.startup_id}`}
+                                                    href={`/startups/${item.id}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="text-blue-500 hover:underline"
@@ -402,7 +403,7 @@ const InvestorPanel: React.FC = () => {
                                         <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
                                             <td className="py-3 px-6 text-left whitespace-nowrap">
                                                 <a
-                                                    href={`/startups/${item.startup_id}`}
+                                                    href={`/startups/${item.id}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="text-blue-500 hover:underline"
