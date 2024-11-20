@@ -925,6 +925,7 @@ app.get('/api/investorpanel_requests/:id', async (req, res) => {
         id: true,
         user_id: true,
         company_name: true,
+        company_email: true,
       },
     });
 
@@ -934,6 +935,7 @@ app.get('/api/investorpanel_requests/:id', async (req, res) => {
         id: startup.id,
         user_id: startup.user_id,
         company_name: startup.company_name,
+        company_email: startup.company_email,
       };
     });
 
@@ -945,7 +947,7 @@ app.get('/api/investorpanel_requests/:id', async (req, res) => {
       company_name: startupMap[deal.startup_id]?.company_name || null,
       first_name: userMap[deal.startup_id]?.first_name || null,
       last_name: userMap[deal.startup_id]?.last_name || null,
-      email: userMap[deal.startup_id]?.email || null,
+      email: startupMap[deal.startup_id]?.company_email || null,
       investment_amount: deal.investment_amount,
       reason: deal.reason,
       status: deal.status,
