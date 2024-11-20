@@ -95,6 +95,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import featuredDeals from "./FeaturedDeals";
 
 interface FeaturedDeal {
   id: number;
@@ -103,6 +104,7 @@ interface FeaturedDeal {
   company_background: string;
   company_description: string;
   category: string;
+  valuation_cap: number;
   funding_goal: number;
   raised: number;
   percentRaised: number;
@@ -169,11 +171,12 @@ function StartUpCard({ limit }: StartUpCardProps) {
             <h2 className="text-xl font-semibold text-gray-800">{deal.company_name}</h2>
             <p className="text-gray-600 my-4">{deal.company_description}</p>
             <div className="mt-4">
-              <div className="text-gray-400">{deal.percentRaised}% raised of ${deal.funding_goal / 1000}K goal</div>
+              <div className="text-gray-400">{Math.min(100, (deal.funding_goal / deal.valuation_cap) * 100).toFixed(0)}% raised of $
+                {(deal.valuation_cap / 10000).toFixed(0)}K goal</div>
               <div className="h-2 bg-gray-700 mt-2 rounded-[10px]">
                 <div
                   className="h-full bg-[#C3FF73] rounded-[10px]"
-                  style={{ width: `${deal.percentRaised}%` }}
+                  style={{ width: `${Math.min(100, (deal.funding_goal / deal.valuation_cap) * 100).toFixed(0)}%` }}
                 ></div>
               </div>
             </div>

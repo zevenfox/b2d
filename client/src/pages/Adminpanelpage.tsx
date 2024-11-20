@@ -39,7 +39,7 @@ const AdminPanel: React.FC = () => {
         try {
             const [investmentResponse, startupResponse] = await Promise.all([
                 axios.get(`http://localhost:3001/api/investment_requests/${user_id}`),
-                axios.get(`http://localhost:3001/api/startups/${user_id}`),
+                axios.get(`http://localhost:3001/api/startupsid/${user_id}`),
             ]);
 
             // Filter and sort investment requests

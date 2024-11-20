@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 
 interface InvestProps {
     onClose: () => void;
+    startup_id: number;
     minInvestment?: number;
     maxInvestment?: number;
 }
@@ -15,8 +15,7 @@ interface InvestmentFormData {
     startup_id: number;
 }
 
-const Invest: React.FC<InvestProps> = ({ onClose, minInvestment, maxInvestment }) => {
-    const { id: startupId } = useParams<{ id: string }>();
+const Invest: React.FC<InvestProps> = ({ onClose, startup_id, minInvestment, maxInvestment }) => {
     const [investmentAmount, setInvestmentAmount] = useState<string>("");
     const [reason, setReason] = useState<string>("");
     const [agreeToTerms, setAgreeToTerms] = useState(false);
@@ -63,7 +62,7 @@ const Invest: React.FC<InvestProps> = ({ onClose, minInvestment, maxInvestment }
         const investmentData: InvestmentFormData = {
             investment_amount: amount,
             reason: reason.trim(),
-            startup_id: Number(startupId),
+            startup_id,
         };
 
         try {

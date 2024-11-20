@@ -406,6 +406,59 @@ app.get("/api/startups/:id", async (req, res) => {
   }
 });
 
+app.get("/api/startupsid/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const startup = await prisma.startUp.findUnique({ where: { user_id: parseInt(id) } });
+
+    if (startup) {
+      // Initialize variables for all image fields
+      let companyLogoUrl = '';
+      let opportunityImageUrl = '';
+      let productImageUrl = '';
+      let businessModelImageUrl = '';
+
+      // Function to generate signed URLs for S3
+      const generateSignedUrl = async (imageKey) => {
+        if (imageKey) {
+          try {
+            const params = {
+              Bucket: s3Bucket,
+              Key: imageKey, // S3 key for the image
+            };
+            const command = new GetObjectCommand(params);
+            return await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+          } catch (error) {
+            console.error(`Error generating signed URL for image: ${imageKey}`, error);
+            return ''; // Return an empty string if there was an error
+          }
+        }
+        return ''; // Return an empty string if no image key is provided
+      };
+
+      // Generate signed URLs for all image fields
+      companyLogoUrl = await generateSignedUrl(startup.company_logo);
+      opportunityImageUrl = await generateSignedUrl(startup.opportunity_image);
+      productImageUrl = await generateSignedUrl(startup.product_image);
+      businessModelImageUrl = await generateSignedUrl(startup.business_model_image);
+
+      // Return the startup with all the signed URLs
+      res.json({
+        ...startup,
+        company_logo: companyLogoUrl, // Signed URL for company_logo
+        opportunity_image: opportunityImageUrl, // Signed URL for opportunity_image
+        product_image: productImageUrl, // Signed URL for product_image
+        business_model_image: businessModelImageUrl, // Signed URL for business_model_image
+      });
+    } else {
+      res.status(404).json({ error: "Startup not found." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching the startup." });
+  }
+});
+
 
 // Fetch all startups
 app.get("/api/allstartups", async (req, res) => {
@@ -530,6 +583,7 @@ app.get("/api/featured-deals", async (req, res) => {
         company_background: companyBackgroundUrl, // Signed URL for company_background
         company_description: startup.company_description,
         category: startup.company_business_type,
+        valuation_cap: startup.valuation_cap,
         funding_goal: startup.funding_goal,
         raised: raised,
         percentRaised: Math.round(percentRaised),
@@ -637,7 +691,7 @@ app.post('/api/invest', authenticateToken, async (req, res) => {
 
     // Fetch the startup
     const startup = await prisma.startUp.findUnique({
-      where: { id: startup_id }
+      where: { user_id: startup_id }
     });
 
     if (!startup) {
@@ -771,7 +825,7 @@ app.put('/api/investment_requests/:id', async (req, res) => {
     // Only update the funding_goal if the status is approved
     if (status === 'accepted') {
       await prisma.startUp.update({
-        where: { id: investmentRequest.startup_id }, // Use startup_id from InvestmentDeal
+        where: { user_id: investmentRequest.startup_id }, // Use startup_id from InvestmentDeal
         data: {
           funding_goal: {
             increment: investmentRequest.investment_amount, // Add the investment amount to funding_goal
@@ -863,7 +917,7 @@ app.get('/api/investorpanel_requests/:id', async (req, res) => {
 
     const companies = await prisma.startUp.findMany({
       where: {
-        id: { in: userIds }, // Fetch users whose IDs are in the userIds array
+        user_id: { in: userIds }, // Fetch users whose IDs are in the userIds array
       },
       select: {
         id: true,
@@ -874,7 +928,8 @@ app.get('/api/investorpanel_requests/:id', async (req, res) => {
 
     const startupMap = {};
     companies.forEach(startup => {
-      startupMap[startup.id] = {
+      startupMap[startup.user_id] = {
+        id: startup.id,
         user_id: startup.user_id,
         company_name: startup.company_name,
       };
@@ -882,7 +937,8 @@ app.get('/api/investorpanel_requests/:id', async (req, res) => {
 
     // Format the response by combining investment requests with user details
     const formattedRequests = investmentRequests.map(deal => ({
-      id: deal.id,
+      deal_id: deal.id,
+      id: startupMap[deal.startup_id]?.id || null,
       startup_id: startupMap[deal.startup_id]?.user_id || null,
       company_name: startupMap[deal.startup_id]?.company_name || null,
       first_name: userMap[deal.startup_id]?.first_name || null,
