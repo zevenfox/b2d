@@ -45,6 +45,14 @@ const SortDropdown: React.FC<SortDropdownProps> = ({ sortOption, setSortOption }
                         </li>
                         <li
                             className={`px-4 py-2 cursor-pointer hover:bg-gray-200 transition ${
+                                sortOption === 'latest' ? 'bg-gray-100 font-bold' : ''
+                            }`}
+                            onClick={() => handleSortSelection('closing')}
+                        >
+                            Closing soon
+                        </li>
+                        <li
+                            className={`px-4 py-2 cursor-pointer hover:bg-gray-200 transition ${
                                 sortOption === 'alphabet' ? 'bg-gray-100 font-bold' : ''
                             }`}
                             onClick={() => handleSortSelection('alphabet')}
@@ -61,11 +69,11 @@ const SortDropdown: React.FC<SortDropdownProps> = ({ sortOption, setSortOption }
                         </li>
                         <li
                             className={`px-4 py-2 cursor-pointer hover:bg-gray-200 transition ${
-                                sortOption === 'latest' ? 'bg-gray-100 font-bold' : ''
+                                sortOption === 'oldest' ? 'bg-gray-100 font-bold' : ''
                             }`}
-                            onClick={() => handleSortSelection('latest')}
+                            onClick={() => handleSortSelection('oldest')}
                         >
-                            Latest
+                            Oldest
                         </li>
                     </ul>
                 </div>

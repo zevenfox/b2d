@@ -74,9 +74,15 @@ function AllStartUpPage() {
             case 'reverse-alphabet':
                 return [...startups].sort((a, b) => b.company_name.localeCompare(a.company_name));
             case 'newest':
-                return [...startups].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-            case 'latest':
-                return [...startups].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+                return [...startups].sort((a, b) => (b.id - a.id));
+            case 'closing':
+                const twoWeeksFromNow = new Date();
+                twoWeeksFromNow.setDate(twoWeeksFromNow.getDate() + 14);
+                return [...startups]
+                    .filter(startup => new Date(startup.date) <= twoWeeksFromNow)
+                    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            case 'oldest':
+                return [...startups].sort((a, b) => (a.id - b.id));
             default:
                 return startups;
         }

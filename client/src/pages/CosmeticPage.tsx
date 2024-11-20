@@ -66,18 +66,24 @@ function CosmeticPage() {
         fetchCosmeticStartUps();
     }, []);
 
-    const sortDeals = (deals: StartUp[]) => {
+    const sortDeals = (startups: StartUp[]) => {
         switch (sortOption) {
             case 'alphabet':
-                return [...deals].sort((a, b) => a.company_name.localeCompare(b.company_name));
+                return [...startups].sort((a, b) => a.company_name.localeCompare(b.company_name));
             case 'reverse-alphabet':
-                return [...deals].sort((a, b) => b.company_name.localeCompare(a.company_name));
+                return [...startups].sort((a, b) => b.company_name.localeCompare(a.company_name));
             case 'newest':
-                return [...deals].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-            case 'latest':
-                return [...deals].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+                return [...startups].sort((a, b) => (b.id - a.id));
+            case 'closing':
+                const twoWeeksFromNow = new Date();
+                twoWeeksFromNow.setDate(twoWeeksFromNow.getDate() + 14);
+                return [...startups]
+                    .filter(startup => new Date(startup.date) <= twoWeeksFromNow)
+                    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            case 'oldest':
+                return [...startups].sort((a, b) => (a.id - b.id));
             default:
-                return deals;
+                return startups;
         }
     };
 
