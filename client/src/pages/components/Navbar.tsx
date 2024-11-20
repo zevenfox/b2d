@@ -47,7 +47,7 @@ const Navbar: React.FC = () => {
                                 onClick={() => navigate(`/investorpanel/${localStorage.getItem('id')}`)}
                                 className="bg-black px-[15px] py-[5px] rounded-full text-white transition-transform transform hover:bg-[#A8FF35] hover:text-black hover:scale-105 hover:shadow-xl hover:z-20 hover:text-black"
                             >
-                                My Investment
+                                My Investments
                             </button>
                         )}
                         {/* <span className="text-[#BED754] border border-[#BED754] px-[10px] py-[5px] rounded-full">Welcome, {username}</span> */}
