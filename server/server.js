@@ -488,11 +488,11 @@ app.get("/api/allstartups", async (req, res) => {
       }
 
       // Generate signed URL for company_background
-      if (startup.company_background) {
+      if (startup.opportunity_image) {
         try {
           const backgroundParams = {
             Bucket: s3Bucket,
-            Key: startup.company_background, // S3 key for company_background
+            Key: startup.opportunity_image, // S3 key for company_background
           };
           const backgroundCommand = new GetObjectCommand(backgroundParams);
           companyBackgroundUrl = await getSignedUrl(s3Client, backgroundCommand, { expiresIn: 3600 });
@@ -508,6 +508,7 @@ app.get("/api/allstartups", async (req, res) => {
         company_background: companyBackgroundUrl, // Signed URL for company_background
         company_description: startup.company_description,
         category: startup.company_business_type,
+        valuation_cap: startup.valuation_cap,
         funding_goal: startup.funding_goal,
         raised: raised,
         percentRaised: Math.round(percentRaised),
@@ -563,11 +564,11 @@ app.get("/api/featured-deals", async (req, res) => {
       }
 
       // Generate signed URL for company_background
-      if (startup.company_background) {
+      if (startup.opportunity_image) {
         try {
           const backgroundParams = {
             Bucket: s3Bucket,
-            Key: startup.company_background, // S3 key for company_background
+            Key: startup.opportunity_image, // S3 key for company_background
           };
           const backgroundCommand = new GetObjectCommand(backgroundParams);
           companyBackgroundUrl = await getSignedUrl(s3Client, backgroundCommand, { expiresIn: 3600 });
@@ -630,11 +631,11 @@ app.get("/api/business-type", async (req, res) => {
       }
 
       // Generate signed URL for company_background
-      if (startup.company_background) {
+      if (startup.opportunity_image) {
         try {
           const backgroundParams = {
             Bucket: s3Bucket,
-            Key: startup.company_background, // S3 key for company_background
+            Key: startup.opportunity_image, // S3 key for company_background
           };
           const backgroundCommand = new GetObjectCommand(backgroundParams);
           companyBackgroundUrl = await getSignedUrl(s3Client, backgroundCommand, { expiresIn: 3600 }); // URL expires in 1 hour
@@ -650,6 +651,7 @@ app.get("/api/business-type", async (req, res) => {
         company_background: companyBackgroundUrl, // Return the signed URL
         company_description: startup.company_description,
         category: startup.company_business_type,
+        valuation_cap: startup.valuation_cap,
         funding_goal: startup.funding_goal,
         raised: raised,
         percentRaised: Math.round(percentRaised),
