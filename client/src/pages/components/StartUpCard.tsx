@@ -152,7 +152,7 @@ function StartUpCard({ limit }: StartUpCardProps) {
           <div className="relative h-[150px] transition-all duration-300">
             <div
               className="h-full bg-cover bg-center"
-              style={{ backgroundImage: `url(${deal.company_background})` }}
+              style={{ backgroundImage: `url(${deal.company_background})`, opacity: 0.3 }}
             />
             {/* Logo Positioned at the Bottom Middle */}
             <div className="absolute -bottom-[30px] left-1/2 transform -translate-x-1/2">
@@ -172,7 +172,7 @@ function StartUpCard({ limit }: StartUpCardProps) {
             <p className="text-gray-600 my-4">{deal.company_description}</p>
             <div className="mt-4">
               <div className="text-gray-400">{Math.min(100, (deal.funding_goal / deal.valuation_cap) * 100).toFixed(0)}% raised of $
-                {(deal.valuation_cap / 10000).toFixed(0)}K goal</div>
+                {(deal.valuation_cap / 1000).toFixed(0)}K goal</div>
               <div className="h-2 bg-gray-700 mt-2 rounded-[10px]">
                 <div
                   className="h-full bg-[#C3FF73] rounded-[10px]"

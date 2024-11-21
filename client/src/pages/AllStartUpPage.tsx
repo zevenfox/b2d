@@ -13,6 +13,7 @@ interface StartUp {
     company_background: string;
     company_description: string;
     category: string;
+    valuation_cap: number;
     funding_goal: number;
     raised: number;
     percentRaised: number;
@@ -73,9 +74,15 @@ function AllStartUpPage() {
             case 'reverse-alphabet':
                 return [...startups].sort((a, b) => b.company_name.localeCompare(a.company_name));
             case 'newest':
-                return [...startups].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-            case 'latest':
-                return [...startups].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+                return [...startups].sort((a, b) => (b.id - a.id));
+            case 'closing':
+                const twoWeeksFromNow = new Date();
+                twoWeeksFromNow.setDate(twoWeeksFromNow.getDate() + 14);
+                return [...startups]
+                    .filter(startup => new Date(startup.date) <= twoWeeksFromNow)
+                    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            case 'oldest':
+                return [...startups].sort((a, b) => (a.id - b.id));
             default:
                 return startups;
         }
@@ -145,7 +152,7 @@ function AllStartUpPage() {
                                 <div className="relative h-[150px] transition-all duration-300">
                                     <div
                                         className="h-full bg-cover bg-center"
-                                        style={{ backgroundImage: `url(${startup.company_background})` }}
+                                        style={{ backgroundImage: `url(${startup.company_background})`, opacity: 0.3 }}
                                     />
                                     <div className="absolute -bottom-[30px] left-1/2 transform -translate-x-1/2">
                                         <img
@@ -162,11 +169,11 @@ function AllStartUpPage() {
                                     <h2 className="text-xl font-semibold text-gray-800">{startup.company_name}</h2>
                                     <p className="text-gray-600 my-4">{startup.description}</p>
                                     <div className="mt-4">
-                                        <div className="text-gray-400">{startup.percentRaised}% raised of ${startup.funding_goal / 1000}K goal</div>
+                                        <div className="text-gray-400">{Math.min(100, (startup.funding_goal / startup.valuation_cap) * 100).toFixed(0)}% raised of ${(startup.valuation_cap / 1000).toFixed(0)}K goal</div>
                                         <div className="h-2 bg-gray-700 mt-2 rounded-[10px]">
                                             <div
                                                 className="h-full bg-[#C3FF73] rounded-[10px]"
-                                                style={{ width: `${startup.percentRaised}%` }}
+                                                style={{ width: `${Math.min(100, (startup.funding_goal / startup.valuation_cap) * 100).toFixed(0)}%` }}
                                             ></div>
                                         </div>
                                     </div>
